@@ -86,7 +86,7 @@ const SignInForm = ({ buttonClasses, buttonForGFT }) => {
             </a>
           </div>
 
-          <button type="submit" className={buttonClasses}>
+          <button type="submit" className={buttonClasses}  >
             Sign in
           </button>
         </form>
