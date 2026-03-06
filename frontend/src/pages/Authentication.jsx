@@ -13,7 +13,7 @@ const Authentication = () => {
  
   // Common button styles
   const buttonClasses =
-    `w-full text-white bg-backgroundColor hover:bg-brightColor focus:ring-4 focus:outline-none 
+    `w-full text-primary  hover:bg-brightColor focus:ring-4 focus:outline-none 
     focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all 
     duration-200 transform hover:scale-[1.02] hover:shadow-md`;
   const buttonForGFT =
