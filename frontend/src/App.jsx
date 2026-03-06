@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
+import Authentication from "./pages/Authentication";
 
 function App() {
   return (
@@ -25,6 +26,12 @@ function App() {
           }
         />
 
+        <Route 
+          path="/loginsigup" 
+          element={
+            <Authentication />
+        } 
+      />
       </Routes>
     </BrowserRouter>
   );
