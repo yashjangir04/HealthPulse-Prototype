@@ -138,7 +138,7 @@ const MediList = () => {
     <div className="poppins-regular w-full min-h-screen flex flex-col gap-6 p-4 md:p-6 items-center relative">
       <div className="mediList-top flex flex-col md:flex-row justify-between items-center w-full gap-4 md:gap-0">
         <div className="mediList-top-left-section flex flex-row gap-4 md:gap-5 items-center">
-          <div className="bg-blue-100 p-3 rounded-2xl">
+          <div className="bg-blue-100 p-3 fancy-border-radius-1">
             <PiPillFill className="text-[32px] text-blue-500" />
           </div>
           <div className="mediL-top-text flex flex-col text-center md:text-left">
