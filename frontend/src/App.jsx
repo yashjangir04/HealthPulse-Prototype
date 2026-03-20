@@ -7,7 +7,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route
           path="/"
           element={
@@ -26,12 +25,7 @@ function App() {
           }
         />
 
-        <Route 
-          path="/loginsigup" 
-          element={
-            <Authentication />
-        } 
-      />
+        <Route path="/account/:mode" element={<Authentication />} />
       </Routes>
     </BrowserRouter>
   );

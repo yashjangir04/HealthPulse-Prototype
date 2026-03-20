@@ -1,11 +1,21 @@
 
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import SignInForm from "../components/SignInForm";
 import SignUpForm from "../components/SignUpForm";
 import signin from "../assets/signin.svg";
 import signup from "../assets/signup.svg";
+import { useParams } from "react-router-dom";
+
 const Authentication = () => {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
+  const { mode } = useParams() ;
+
+  useEffect(() => {
+    if(mode === "create") {
+      toggleSignUpMode() ;
+    }
+  }, [])
+  
  
   const toggleSignUpMode = () => {
     setIsSignUpMode(!isSignUpMode);
