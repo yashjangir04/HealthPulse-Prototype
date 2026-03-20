@@ -10,7 +10,7 @@ const Navbar = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed top-0 w-full h-24 flex items-center justify-between px-12 bg-white/60 backdrop-blur-xl z-[100] border-b border-white/20 shadow-sm">
+    <nav className="fixed top-0 w-full h-24 flex items-center justify-between px-12 bg-white/60 backdrop-blur-xl z-100 border-b border-white/20 shadow-sm">
       <div className="flex items-center gap-4 group cursor-pointer">
         <div className="w-14 h-14 flex items-center justify-center">
           <img
@@ -42,7 +42,7 @@ const Navbar = () => {
                 location.pathname === "/" ? "w-full" : "w-0 group-hover:w-full"
               }`}
             ></span>
-            <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-blue-600 rounded-full"></div>
+            <div className="absolute -bottom-1 left-0 w-full h-0.75 bg-blue-600 rounded-full"></div>
           </li>
 
           <li className="relative group">
@@ -54,7 +54,7 @@ const Navbar = () => {
             </Link>
 
             <span
-              className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-[3px] bg-blue-600 rounded-full transition-all duration-300 ${
+              className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-0.75 bg-blue-600 rounded-full transition-all duration-300 ${
                 location.pathname === "/about"
                   ? "w-full"
                   : "w-0 group-hover:w-full"

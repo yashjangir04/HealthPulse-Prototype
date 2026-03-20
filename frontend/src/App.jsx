@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Authentication from "./pages/Authentication";
+import MediList from "./pages/MediList";
 
 function App() {
   return (
@@ -26,6 +27,15 @@ function App() {
         />
 
         <Route path="/account/:mode" element={<Authentication />} />
+
+        <Route
+          path="/medi-list"
+          element={
+            <MainLayout>
+              <MediList />
+            </MainLayout>
+          }
+        ></Route>
       </Routes>
     </BrowserRouter>
   );

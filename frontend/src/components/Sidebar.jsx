@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { User, Sparkles, FileText, Users, Bell, UserRound, LogOut, ChevronLeft, ChevronRight, LogIn } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
+  const navigate = useNavigate() ;
   const { user, isLoggedIn, logout } = useAuth();
 
   const menuItems = [
@@ -10,7 +12,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     { icon: <Sparkles size={22} />, label: "AI Help", active: true },
     { icon: <FileText size={22} />, label: "Reports" },
     { icon: <Users size={22} />, label: "Contacts" },
-    { icon: <Bell size={22} />, label: "Reminder" },
+    { icon: <Bell size={22} />, label: "Reminder" , buttonRoute: "medi-list" },
     { icon: <UserRound size={22} />, label: "Connect" },
   ];
 
