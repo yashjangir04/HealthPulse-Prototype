@@ -2,11 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Authentication from "./pages/Authentication";
 import Landing from "./pages/Landing";
+import MediList from "./pages/MediList";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route
           path="/"
           element={
@@ -26,14 +27,16 @@ function App() {
           }
         />
 
-        <Route 
-          path="/loginsigup" 
+        <Route path="/account/:mode" element={<Authentication />} />
+
+        <Route
+          path="/medi-list"
           element={
-            <Authentication />
-        } 
-      />
-  
-     
+            <MainLayout>
+              <MediList />
+            </MainLayout>
+          }
+        ></Route>
       </Routes>
     </BrowserRouter>
   );

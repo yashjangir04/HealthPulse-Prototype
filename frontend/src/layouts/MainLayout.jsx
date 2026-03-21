@@ -6,7 +6,7 @@ const MainLayout = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-secondary flex flex-col">
       <Navbar />
       <div className="flex flex-1 pt-24">
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
