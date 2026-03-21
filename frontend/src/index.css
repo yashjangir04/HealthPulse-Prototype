@@ -7,5 +7,26 @@
     display:none;
 }
 @theme {
-  --color-primary:#1A80FD;
+  --color-primary:#3F87F7;
+}
+body{
+  background: linear-gradient(
+    135deg,
+    #EAF3FF,
+    #DCEBFF,
+    #CFE2FF
+  );
+  /* min-height: screen; */
+}
+@keyframes gradientMove {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-gradient {
+  animation: gradientMove 3s linear infinite;
 }

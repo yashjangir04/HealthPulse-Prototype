@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
 import Authentication from "./pages/Authentication";
-
+import Landing from "./pages/Landing";
 function App() {
   return (
     <BrowserRouter>
@@ -12,7 +11,8 @@ function App() {
           path="/"
           element={
             <MainLayout>
-              <Home />
+              <Landing />
+            
             </MainLayout>
           }
         />
@@ -32,6 +32,8 @@ function App() {
             <Authentication />
         } 
       />
+  
+     
       </Routes>
     </BrowserRouter>
   );
