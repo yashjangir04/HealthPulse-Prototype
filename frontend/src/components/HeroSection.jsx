@@ -3,7 +3,7 @@ import health from "../assets/Group 21.png";
 import arrow from "../assets/image 85.png";
 import vector1 from "../assets/blob1.png";
 import vector2 from "../assets/blob2.png";
-import vid from "../assets/doc.mp4";
+import vid from "../assets/doc1.mp4";
 const words = ["trusted", "accessible", "empower", "digital"];
 
 export default function HeroSection() {
@@ -105,7 +105,7 @@ export default function HeroSection() {
         </div>
 
         {/* RIGHT SECTION */}
-        <div className="w-full lg:w-1/2 flex justify-center">
+        <div className="w-full lg:w-1/2 flex">
         <img
     src={vector1}
     alt="background blob"
@@ -115,7 +115,7 @@ export default function HeroSection() {
     opacity-100"
   />
             <video
-      className="w-full h-full object-cover rounded-2xl"
+      className="w-full h-full object-cover rounded-2xl lg:mt-16 "
       autoPlay
       loop
       muted
