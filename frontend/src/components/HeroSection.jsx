@@ -23,7 +23,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div className="px-6 lg:px-12 min-h-screen">
+    <div className="px-6 lg:px-12 min-h-screen mt-32">
     
 
       {/* top image */}
