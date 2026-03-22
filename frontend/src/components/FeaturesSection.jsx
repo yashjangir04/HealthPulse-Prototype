@@ -50,9 +50,10 @@ const FeaturesSection = () => {
 
       <div className="max-w-[1400px] mx-auto">
 
-        <div className="mb-16">
-          <h2 className="text-[#1D4ED8] font-black text-4xl tracking-tight uppercase"
+        <div className="mb-5">
+          <h2 className="text-[34px] sm:text-[44px] md:text-[54px] lg:text-[40px] xl:text-[50px] font-semibold text-center "
           >
+           
             What We Provide
           </h2>
           <div className="w-24 h-[6px] rounded-full mt-3"></div>

@@ -29,9 +29,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
       transition-all duration-500 ease-in-out
       bg-white backdrop-blur-xl border-r border-gray-100
       
-      top-20 h-[calc(100vh-5rem)]
-      md:top-24 md:h-[calc(100vh-6rem)]
-      lg:top-24 lg:h-[calc(100vh-6rem)]
+      top-0 h-full pt-20 md:pt-10
       
       w-16 ${isOpen ? 'w-72 shadow-2xl' : ''}
       

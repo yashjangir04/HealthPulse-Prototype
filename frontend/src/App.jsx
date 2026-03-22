@@ -11,10 +11,10 @@ function App() {
         <Route
           path="/"
           element={
-            <MainLayout>
+            
               <Landing />
             
-            </MainLayout>
+          
           }
         />
 
