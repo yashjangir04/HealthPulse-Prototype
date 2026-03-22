@@ -3,6 +3,7 @@ import MainLayout from "./layouts/MainLayout";
 import Authentication from "./pages/Authentication";
 import Landing from "./pages/Landing";
 import MediList from "./pages/MediList";
+import MeetingRoom from "./pages/MeetingRoom";
 
 function App() {
   return (
@@ -34,6 +35,15 @@ function App() {
           element={
             <MainLayout>
               <MediList />
+            </MainLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/meeting/room/:roomID"
+          element={
+            <MainLayout>
+              <MeetingRoom />
             </MainLayout>
           }
         ></Route>
