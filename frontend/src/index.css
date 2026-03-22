@@ -1,11 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 *{
-    font-family: "Outfit", sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 ::-webkit-scrollbar{
     display:none;
 }
 @theme {
-  --color-primary:#1A80FD;
+  --color-primary:[#1A80FD];
+}
+body {
+  background: linear-gradient(
+    135deg,
+    #EAF3FF,
+    #DCEBFF,
+    #CFE2FF
+  );
+  min-height: 100vh;
 }
