@@ -43,7 +43,7 @@ const Navbar = () => {
         </div>
       </button>
 
-      <div className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row absolute lg:static top-20 left-0 w-full lg:w-auto bg-white/90 backdrop-blur-xl p-8 lg:p-0 border-b lg:border-none shadow-lg lg:shadow-none items-center space-y-8 lg:space-y-0 lg:space-x-12`}>
+      <div className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row absolute lg:static top-20 left-0 w-full lg:w-auto bg-white/95 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none p-8 lg:p-0 border-b lg:border-none shadow-lg lg:shadow-none items-center space-y-8 lg:space-y-0 lg:space-x-12`}>
         <ul className="flex flex-col lg:flex-row items-center space-y-6 lg:space-y-0 lg:space-x-10 text-[18px] font-bold text-slate-500">
           <li className="text-blue-600 relative group">
             <Link to="/" className="hover:text-blue-600 transition-colors">
