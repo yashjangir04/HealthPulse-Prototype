@@ -25,12 +25,13 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
 
 
     <aside 
-      className={`fixed left-0 z-50 flex flex-col justify-between py-6 
+      className={`fixed left-0 z-40 lg:z-50 flex flex-col justify-between py-6 
       transition-all duration-500 ease-in-out
-      bg-white/90 backdrop-blur-xl border-r border-gray-100
+      bg-white backdrop-blur-xl border-r border-gray-100
       
-      top-20 md:top-24
-      h-[calc(100vh-5rem)] md:h-[calc(100vh-6rem)]
+      top-20 h-[calc(100vh-5rem)]
+      md:top-24 md:h-[calc(100vh-6rem)]
+      lg:top-24 lg:h-[calc(100vh-6rem)]
       
       w-16 ${isOpen ? 'w-72 shadow-2xl' : ''}
       

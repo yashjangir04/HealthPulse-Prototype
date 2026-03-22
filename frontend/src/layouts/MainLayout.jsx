@@ -9,9 +9,13 @@ const MainLayout = ({ children }) => {
   // handle responsive sidebar behavior
   useEffect(() => {
   const handleResize = () => {
-    if (window.innerWidth >= 1024) {
-      setIsCollapsed(true);   // mobile → collapsed
-      setIsOpen(false);       // close expanded sidebar
+    if (window.innerWidth < 1024) {
+      // mobile
+      setIsCollapsed(true);
+      setIsOpen(false);
+    } else {
+      // desktop
+      setIsCollapsed(false); // expanded by default
     }
   };
 
@@ -29,7 +33,7 @@ const MainLayout = ({ children }) => {
       <Navbar setIsOpen={setIsOpen} />
 
       {/* layout wrapper */}
-      <div className={`flex flex-1 ${true ? 'pt-24' : 'pt-0'}`}>
+      <div className="flex flex-1 pt-20 md:pt-24">
 
         <Sidebar isCollapsed={isCollapsed} 
           setIsCollapsed={setIsCollapsed}
@@ -40,9 +44,9 @@ const MainLayout = ({ children }) => {
 
         <main 
           className={`flex-1 transition-all duration-300 ease-in-out 
-          min-h-[calc(100vh-6rem)] rounded-none m-0
-          ml-0 
-          ${isCollapsed ? 'lg:ml-16' : 'lg:ml-64'}
+          min-h-[calc(100vh-6rem)]
+          relative z-0 
+          ${isCollapsed ? 'ml-16 lg:ml-16' : 'ml-16 lg:ml-64'}
         `}
         >
           

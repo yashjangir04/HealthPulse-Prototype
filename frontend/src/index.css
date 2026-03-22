@@ -182,3 +182,13 @@
 .fancy-border-radius-1 {
     border-radius: 47% 51% 21% 79% / 47% 48% 16% 22% ;
 }
+
+body{
+  background: linear-gradient(
+    135deg,
+    #EAF3FF,
+    #DCEBFF,
+    #CFE2FF
+  );
+  min-height: 100vh;
+}
