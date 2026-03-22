@@ -54,7 +54,7 @@ const Navbar = () => {
                 location.pathname === "/" ? "w-full" : "w-0 group-hover:w-full"
               }`}
             ></span>
-            <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-blue-600 rounded-full"></div>
+            <div className="absolute -bottom-1 left-0 w-full h-0.75 bg-blue-600 rounded-full"></div>
           </li>
 
           <li className="relative group">
@@ -66,7 +66,7 @@ const Navbar = () => {
             </Link>
 
             <span
-              className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-[3px] bg-blue-600 rounded-full transition-all duration-300 ${
+              className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-0.75 bg-blue-600 rounded-full transition-all duration-300 ${
                 location.pathname === "/about"
                   ? "w-full"
                   : "w-0 group-hover:w-full"
