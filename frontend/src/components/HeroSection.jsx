@@ -3,6 +3,7 @@ import health from "../assets/Group 21.png";
 import arrow from "../assets/image 85.png";
 import vector1 from "../assets/blob1.png";
 import vector2 from "../assets/blob2.png";
+import vid from "../assets/doc.mp4";
 const words = ["trusted", "accessible", "empower", "digital"];
 
 export default function HeroSection() {
@@ -36,13 +37,13 @@ export default function HeroSection() {
 
         {/* LEFT SECTION */}
         <div className="relative w-full lg:w-1/2 text-center lg:text-left">
-        <img
+        <img 
     src={vector2}
     alt="background blob"
-    className="absolute -z-10 
-    top-[-50px] left-[-40px]
+    className=" fixed -z-10
+    top-[50px] left-[-40px]
     w-[220px] sm:w-[280px] lg:w-[350px] 
-    opacity-100"
+    opacity-100 "
   />
           <h1 className="font-semibold leading-[1.3]
           text-[34px] sm:text-[44px] md:text-[54px] lg:text-[70px] xl:text-[80px]">
@@ -108,14 +109,20 @@ export default function HeroSection() {
         <img
     src={vector1}
     alt="background blob"
-    className="absolute -z-10 
-    top-[80px] right-[-40px]
+    className="fixed -z-10 
+    top-[150px] right-[-40px]
     w-[220px] sm:w-[280px] lg:w-[350px] 
     opacity-100"
   />
-          <div className="w-[280px] sm:w-[350px] md:w-[420px] lg:w-[480px] h-[250px] sm:h-[320px] md:h-[380px] lg:h-[420px] bg-transparent rounded-2xl flex items-center justify-center text-white text-xl">
-            Hello
-          </div>
+            <video
+      className="w-full h-full object-cover rounded-2xl"
+      autoPlay
+      loop
+      muted
+      playsInline
+    >
+      <source src={vid} type="video/mp4" />
+    </video>
 
         </div>
 

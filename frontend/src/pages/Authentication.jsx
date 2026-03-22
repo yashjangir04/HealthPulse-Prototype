@@ -33,7 +33,7 @@ const Authentication = () => {
  
   return (
     <div
-      className={`relative w-full bg-white min-h-[100vh] lg:min-h-screen overflow-hidden
+      className={`relative w-full bg-transparent min-h-[100vh] lg:min-h-screen overflow-hidden
            before:content-[''] before:absolute before:w-[1500px] before:h-[1500px] lg:before:h-[2000px] 
            lg:before:w-[2000px]
             lg:before:top-[-10%]  before:top-[initial] lg:before:right-[48%] 
@@ -42,7 +42,12 @@ const Authentication = () => {
       
             lg:before:-translate-y-1/2  max-lg:before:-translate-x-1/2 
 
-             before:bg-primary 
+            before:bg-gradient-to-r
+before:from-[#4C84F8]
+before:via-[#8FB6FC]
+before:to-[#C7DCF9]
+before:bg-[length:200%_200%]
+before:animate-gradient
             before:transition-all before:duration-[2s] lg:before:duration-[1.8s]  ${
         isSignUpMode
           ? `lg:before:translate-x-full before:-translate-x-1/2 
