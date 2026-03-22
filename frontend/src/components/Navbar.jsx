@@ -45,8 +45,15 @@ const Navbar = () => {
 
       <div className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row absolute lg:static top-20 left-0 w-full lg:w-auto bg-white/95 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none p-8 lg:p-0 border-b lg:border-none shadow-lg lg:shadow-none items-center space-y-8 lg:space-y-0 lg:space-x-12`}>
         <ul className="flex flex-col lg:flex-row items-center space-y-6 lg:space-y-0 lg:space-x-10 text-[18px] font-bold text-slate-500">
-          <li className="text-blue-600 relative group">
-            <Link to="/" className="hover:text-blue-600 transition-colors">
+          <li className="relative group">
+            <Link 
+              to="/" 
+              className={`transition-colors cursor-pointer ${
+              location.pathname === "/"
+                  ? "text-blue-600"
+                  : "text-slate-500 hover:text-blue-600"
+    }`}
+              >
               Home
             </Link>
             <span
@@ -54,13 +61,17 @@ const Navbar = () => {
                 location.pathname === "/" ? "w-full" : "w-0 group-hover:w-full"
               }`}
             ></span>
-            <div className="absolute -bottom-1 left-0 w-full h-0.75 bg-blue-600 rounded-full"></div>
+            {/* <div className="absolute -bottom-1 left-0 w-full h-0.75 bg-blue-600 rounded-full"></div> */}
           </li>
 
           <li className="relative group">
             <Link
               to="/about"
-              className="hover:text-blue-600 transition-colors cursor-pointer"
+              className={`transition-colors cursor-pointer ${
+              location.pathname === "/about"
+                  ? "text-blue-600"
+                  : "text-slate-500 hover:text-blue-600"
+              }`}
             >
               About Us
             </Link>
@@ -72,6 +83,7 @@ const Navbar = () => {
                   : "w-0 group-hover:w-full"
               }`}
             ></span>
+            
           </li>
         </ul>
 

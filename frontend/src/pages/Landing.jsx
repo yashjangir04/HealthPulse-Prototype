@@ -6,7 +6,6 @@ import Footer from '../components/Footer';
 const Landing = () => {
   return (
     <>
-        <Navbar/>
         <HeroSection />
         <FeaturesSection />
         <Footer />
