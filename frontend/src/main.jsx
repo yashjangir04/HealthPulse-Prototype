@@ -9,7 +9,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <App />
     </AuthProvider>
-  </React.StrictMode>
+  </React.StrictMode> 
 );
 
 

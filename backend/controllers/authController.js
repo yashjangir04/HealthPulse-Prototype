@@ -15,12 +15,12 @@ exports.doctorSignUp = async (req, res) => {
         return res.status(400).send({ msg: "Please provide all the required fields ❌" });
     }
     const hashedPassword = await hashPassword(password);
-    const query = `${address.city} ${address.state} India` ;
+    const query = `${address.city} ${address.state} India`;
     const coords = await getCoordinates(query);
 
     address.location = {
-        type : "Point",
-        coordinates : coords
+        type: "Point",
+        coordinates: coords
     };
 
     try {
@@ -34,19 +34,19 @@ exports.doctorSignUp = async (req, res) => {
 };
 
 exports.patientSignUp = async (req, res) => {
-    const { name, email, password, dob, gender, phoneNumber, bloodGroup, address, secondaryContacts} = req.body;
+    const { name, email, password, dob, gender, phoneNumber, bloodGroup, address, secondaryContacts } = req.body;
 
-    if(!name || !email || !password || !dob || !gender || !phoneNumber || !bloodGroup || !address || !secondaryContacts) {
+    if (!name || !email || !password || !dob || !gender || !phoneNumber || !bloodGroup || !address || !secondaryContacts) {
         return res.status(400).send({ msg: "Please provide all the required fields ❌" });
     }
 
     const hashedPassword = await hashPassword(password);
-    const query = `${address.city} ${address.state} India` ;
+    const query = `${address.city} ${address.state} India`;
     const coords = await getCoordinates(query);
 
     address.location = {
-        type : "Point",
-        coordinates : coords
+        type: "Point",
+        coordinates: coords
     };
 
     try {
@@ -62,17 +62,17 @@ exports.patientSignUp = async (req, res) => {
 exports.shopkeeperSignUp = async (req, res) => {
     const { ownerName, email, password, shopName, phoneNumber, address } = req.body;
 
-    if(!ownerName || !email || !password || !shopName || !phoneNumber || !address) {
+    if (!ownerName || !email || !password || !shopName || !phoneNumber || !address) {
         return res.status(400).send({ msg: "Please provide all the required fields ❌" });
     }
 
     const hashedPassword = await hashPassword(password);
-    const query = `${address.city} ${address.state} India` ;
+    const query = `${address.city} ${address.state} India`;
     const coords = await getCoordinates(query);
 
     address.location = {
-        type : "Point",
-        coordinates : coords
+        type: "Point",
+        coordinates: coords
     };
 
     try {
@@ -94,20 +94,23 @@ exports.login = async (req, res) => {
 
     try {
         const existingDoctor = await Doctor.findOne({ email });
-        if(existingDoctor) {
+        if (existingDoctor) {
             const isPasswordCorrect = await bcrypt.compare(password, existingDoctor.password);
-            if(!isPasswordCorrect) {
+            if (!isPasswordCorrect) {
                 return res.status(401).send({ msg: "Incorrect Credentials ❌" });
             }
+            
             const token = await generateToken(existingDoctor, "doctor");
             setTokenCookie(res, token);
+            
             return res.status(200).send({ msg: "Login successful ✅" });
         }
+        
 
         const existingPatient = await Patient.findOne({ email });
-        if(existingPatient) {
+        if (existingPatient) {
             const isPasswordCorrect = await bcrypt.compare(password, existingPatient.password);
-            if(!isPasswordCorrect) {
+            if (!isPasswordCorrect) {
                 return res.status(401).send({ msg: "Incorrect Credentials ❌" });
             }
             const token = await generateToken(existingPatient, "patient");
@@ -115,19 +118,37 @@ exports.login = async (req, res) => {
             return res.status(200).send({ msg: "Login successful ✅" });
         }
 
+        
+
         const existingShopkeeper = await Shopkeeper.findOne({ email });
-        if(existingShopkeeper) {
+        if (existingShopkeeper) {
             const isPasswordCorrect = await bcrypt.compare(password, existingShopkeeper.password);
-            if(!isPasswordCorrect) {
+            if (!isPasswordCorrect) {
                 return res.status(401).send({ msg: "Incorrect Credentials ❌" });
             }
             const token = await generateToken(existingShopkeeper, "shopkeeper");
             setTokenCookie(res, token);
             return res.status(200).send({ msg: "Login successful ✅" });
         }
-    
+
+
+        
+
         return res.status(404).send({ msg: "User not found ❌" });
-    } catch(err) {
+    } catch (err) {
         return res.status(500).send({ msg: err.message });
     }
 };
+
+exports.getMe = async (req, res) => {
+    return res.status(200).json({ user: req.user });
+}
+
+exports.logout = async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        path: "/",
+    });
+
+    res.status(200).json({ message: "Logged out" });
+}
