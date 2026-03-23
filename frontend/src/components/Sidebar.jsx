@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import {
   User,
@@ -21,14 +22,36 @@ const Sidebar = ({
   isFullHeighted,
 }) => {
   const { user, isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Logic to get initials from name
+  const getInitials = (name) => {
+    if (!name) return "U";
+    const parts = name.trim().split(/\s+/);
+    return parts.length > 1
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : parts[0][0].toUpperCase();
+  };
+
+  // TEAMMATE NOTE: Add backend logout API call here
+  const handleLogout = async () => {
+    try {
+      // 1. Your teammate will add: await api.post('/logout') here
+      await logout(); // 2. Clears local state/tokens
+      navigate("/account/login"); // 3. Redirects user
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
 
   const menuItems = [
-    { icon: <User size={20} />, label: "Profile" },
-    { icon: <Sparkles size={20} />, label: "AI Help", active: true },
-    { icon: <FileText size={20} />, label: "Reports" },
-    { icon: <Users size={20} />, label: "Contacts" },
-    { icon: <Bell size={20} />, label: "Reminder" },
-    { icon: <UserRound size={20} />, label: "Connect" },
+    { icon: <User size={20} />, label: "Profile", path: "/profile" },
+    { icon: <Sparkles size={20} />, label: "AI Help", path: "/ai-help" },
+    { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
+    { icon: <Users size={20} />, label: "Contacts", path: "/contacts" },
+    { icon: <Bell size={20} />, label: "Reminder", path: "/reminders" },
+    { icon: <UserRound size={20} />, label: "Connect", path: "/connect" },
   ];
 
   return (
@@ -42,24 +65,26 @@ const Sidebar = ({
 
       <aside
         className={`fixed left-0 z-40 lg:z-50 flex flex-col justify-between py-6 
-  transition-all duration-500 ease-in-out
-  bg-white backdrop-blur-xl border-r border-gray-100
-  
-  /* Mobile defaults */
-  top-0 h-screen pt-20 md:pt-10
-  
-  /* Width logic */
-  w-16 ${isOpen ? "w-72 shadow-2xl" : ""}
-  ${isCollapsed ? "lg:w-16" : "lg:w-64"}
-  
-  /* Desktop Full-Height vs Gap Logic */
-  ${
-    isFullHeighted
-      ? "lg:top-0 lg:h-screen lg:pt-6"
-      : "lg:top-24 lg:h-[calc(100vh-6rem)]"
-  }
-  `}
+                    transition-all duration-500 ease-in-out
+                    bg-white backdrop-blur-xl border-r border-gray-100
+
+                    /* Mobile defaults */
+                    top-0 h-screen pt-20 md:pt-10
+
+                    /* Width logic */
+                    w-16 ${isOpen ? "w-72 shadow-2xl" : ""}
+                    ${isCollapsed ? "lg:w-16" : "lg:w-64"}
+
+                    /* Desktop Full-Height vs Gap Logic */
+                    ${
+                      isFullHeighted
+                          ? "lg:top-0 lg:h-screen lg:pt-6"
+                          : "lg:top-24 lg:h-[calc(100vh-6rem)]"
+                      }
+  `               }
       >
+
+        
         {/* Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -75,13 +100,18 @@ const Sidebar = ({
         {/* Menu Items */}
         <div className="space-y-1 px-3">
           {menuItems.map((item, index) => (
-            <div
-              key={index}
-              className={`flex items-center gap-4 px-3 py-2.5 rounded-2xl cursor-pointer transition-all duration-300 group ${
-                item.active
-                  ? "bg-[#3F87F7] text-white shadow-xl shadow-blue-200"
-                  : "font-bold text-slate-500 hover:bg-blue-50 hover:text-blue-600"
-              } ${isCollapsed ? "justify-center" : ""}`}
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={() => setIsOpen(false)}
+
+              className={({ isActive }) => `
+                flex items-center gap-4 px-3 py-2.5 rounded-2xl cursor-pointer transition-all duration-300 group
+                ${isActive 
+                  ? "bg-[#3F87F7] text-white shadow-xl shadow-blue-200" 
+                  : "font-bold text-slate-500 hover:bg-blue-50 hover:text-blue-600"}
+                ${isCollapsed && !isOpen ? "justify-center" : ""}
+              `}
             >
               <div className="transition-transform group-hover:scale-110">
                 {item.icon}
@@ -91,48 +121,50 @@ const Sidebar = ({
                   {item.label}
                 </span>
               )}
-            </div>
+            </NavLink>
           ))}
         </div>
 
-        {/* Profile/Auth Bottom */}
-        <div
-          className={`px-4 pt-6 border-t border-gray-100 ${isCollapsed ? "flex justify-center" : ""}`}
-        >
+        {/* Bottom Section */}
+        <div className={`px-3 pt-6 border-t border-gray-100 ${isCollapsed && !isOpen ? "flex flex-col items-center" : ""}`}>
           {isLoggedIn ? (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <img
-                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`}
-                  alt="Avatar"
-                  className="w-8 h-8 rounded-full border-2 border-blue-100 shadow-sm"
-                />
+            <div className="flex flex-col gap-4">
+              {/* Profile Info */}
+              <div className="flex items-center gap-3 px-1">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
+                  {getInitials(user?.name)}
+                </div>
                 {(!isCollapsed || isOpen) && (
                   <div className="flex flex-col overflow-hidden">
                     <span className="font-extrabold text-gray-900 truncate text-[14px]">
-                      {user?.name}
+                      {user?.name || "User"}
                     </span>
-                    <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">
-                      Premium User
-                    </span>
+                    <span className="text-[10px] text-green-500 font-bold uppercase">Online</span>
                   </div>
                 )}
               </div>
-              {(isOpen || !isCollapsed) && (
-                <button
-                  onClick={logout}
-                  className="flex items-center gap-2 text-red-500 font-black text-xs px-1 hover:opacity-70 transition-opacity"
-                >
-                  <LogOut size={16} strokeWidth={3} /> Logout
-                </button>
-              )}
+
+              {/* Real Logout Button */}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className={`flex items-center gap-3 text-red-500 font-bold text-[14px] transition-all duration-200 p-2.5 rounded-xl hover:bg-red-50
+                  ${isCollapsed && !isOpen ? "justify-center w-10 h-10 p-0" : "w-full"}`}
+              >
+                <LogOut size={20} strokeWidth={2.5} />
+                {(!isCollapsed || isOpen) && <span>Logout</span>}
+              </button>
             </div>
           ) : (
+            /* Login Button */
             <button
-              className={`flex items-center justify-center bg-[#3F87F7] text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md ${isCollapsed ? "w-12 h-12" : "w-full py-3 gap-2"}`}
+              type="button"
+              onClick={() => navigate("/account/login")}
+              className={`flex items-center justify-center bg-[#3F87F7] text-white rounded-xl font-bold transition-all duration-300 shadow-xl shadow-blue-100 hover:bg-blue-600
+                ${isCollapsed && !isOpen ? "w-10 h-10" : "w-full py-3.5 gap-2"}`}
             >
               <LogIn size={20} />
-              {!isCollapsed && <span>Login</span>}
+              {(!isCollapsed || isOpen) && <span>Login</span>}
             </button>
           )}
         </div>

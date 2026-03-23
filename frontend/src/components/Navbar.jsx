@@ -114,7 +114,7 @@ const Navbar = () => {
               </Link>
               <span
                 className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-[3px] bg-blue-600 rounded-full transition-all duration-300 ${
-                  location.pathname === "/auth/login"
+                  location.pathname === "/account/login"
                     ? "w-full"
                     : "w-0 group-hover:w-full"
                 }`}
