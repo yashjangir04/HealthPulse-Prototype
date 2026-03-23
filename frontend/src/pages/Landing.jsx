@@ -9,7 +9,6 @@ const Landing = () => {
         <HeroSection />
         <FeaturesSection />
         <Footer />
-
     </>
   )
 }

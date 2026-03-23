@@ -5,7 +5,7 @@ import plusIcon from '../assets/plus.svg';
 const Footer = () => {
   return (
     /* Outer container to handle padding against the page edges */
-    <footer className="w-full bg-transparent">
+    <footer className="w-full bg-transparent absolute">
       
       {/* THE WHITE CARD: Full width, thick blue border, matching your exact image */}
       <div className="w-full bg-white rounded-t-[3rem] p-5 sm:p-6 md:p-10 lg:p-12 shadow-xl">
@@ -78,15 +78,15 @@ const Footer = () => {
             <ul className="space-y-6 text-gray-600 font-medium">
               <li className="flex items-center gap-3">
                 <FaEnvelope className="text-[#1B80FD] text-lg" />
-                <span className="text-[15px] break-words">connect.healthpulse@gmail.com</span>
+                <span className="text-[15px] wrap-break-word">connect.healthpulse@gmail.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-[#1B80FD] text-lg" />
-                <span className="text-[15px] break-words">+91 - 97834 XXXXX</span>
+                <span className="text-[15px] wrap-break-word">+91 - 97834 XXXXX</span>
               </li>
               <li className="flex items-start gap-3">
                 <FaMapMarkerAlt className="text-[#1B80FD] text-lg mt-1" />
-                <span className="text-[15px] break-words leading-snug">
+                <span className="text-[15px] wrap-break-word leading-snug">
                   Academic Block, IIIT Kota<br />Rajasthan, India
                 </span>
               </li>

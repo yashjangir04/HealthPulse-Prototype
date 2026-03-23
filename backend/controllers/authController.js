@@ -1,121 +1,133 @@
-const User = require("../models/user-model") ;
-const jwt = require("jsonwebtoken") ;
-const bcrypt = require("bcrypt") ;
+const Patient = require("../models/patient-model");
+const Doctor = require("../models/doctor-model");
+const Shopkeeper = require("../models/shopkeeper-model");
+const bcrypt = require("bcrypt");
 
-const generateToken = async (user , role) => {
-    const payload = await sanitizeUser(user);
-    const token = jwt.sign(payload , process.env.JWT_SECRET , {
-        expiresIn : "7d"
-    }) ;
-    return token ;
-}
+const generateToken = require("../utils/generateToken");
+const hashPassword = require("../utils/hashPassword");
+const getCoordinates = require("../utils/getCoordinates");
+const setTokenCookie = require("../utils/setTokenCookie");
 
-const sanitizeUser = async (user) => {
-    const { id , name , role } = user ;
-    return {
-        id , name , role
-    } ;
-}
+exports.doctorSignUp = async (req, res) => {
+    const { name, email, password, dob, gender, phoneNumber, specialization, address, qualification, university } = req.body;
 
-const setTokenCookie = (res, token) => {
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+    if (!name || !email || !password || !dob || !gender || !phoneNumber || !specialization || !address || !qualification || !university) {
+        return res.status(400).send({ msg: "Please provide all the required fields ❌" });
+    }
+    const hashedPassword = await hashPassword(password);
+    const query = `${address.city} ${address.state} India` ;
+    const coords = await getCoordinates(query);
+
+    address.location = {
+        type : "Point",
+        coordinates : coords
+    };
+
+    try {
+        await new Doctor({
+            name, email, password: hashedPassword, dob, gender, phoneNumber, specialization, address, qualification, university
+        }).save();
+        return res.status(201).send({ msg: "Doctor created successfully ✅" });
+    } catch (error) {
+        return res.status(500).send({ msg: error.message });
+    }
 };
 
-exports.doctorSignUp = async (req , res) => {
-    const { name , email , password , phone } = req.body ;
-    if (!name || !email || !password || !phone) {
-        return res.status(400).send({ msg : "Please provide all the required fields ❌" }) ;
-    }
-    
-    try {
-        const hashedPassword = await bcrypt.hash(password , 10) ;
-        const user = await User.create({
-            name , email , password : hashedPassword , role : "doctor" , phone
-        }) ;
+exports.patientSignUp = async (req, res) => {
+    const { name, email, password, dob, gender, phoneNumber, bloodGroup, address, secondaryContacts} = req.body;
 
-        
-        setTokenCookie(res , token) ;
-        return res.status(201).send({ msg : "User created successfully ✅"}) ;
+    if(!name || !email || !password || !dob || !gender || !phoneNumber || !bloodGroup || !address || !secondaryContacts) {
+        return res.status(400).send({ msg: "Please provide all the required fields ❌" });
+    }
+
+    const hashedPassword = await hashPassword(password);
+    const query = `${address.city} ${address.state} India` ;
+    const coords = await getCoordinates(query);
+
+    address.location = {
+        type : "Point",
+        coordinates : coords
+    };
+
+    try {
+        await new Patient({
+            name, email, password: hashedPassword, dob, gender, phoneNumber, bloodGroup, address, secondaryContacts
+        }).save();
+        return res.status(201).send({ msg: "Patient created successfully ✅" });
     } catch (error) {
-        return res.status(500).send({ msg : `${error.message}❌` }) ;
+        return res.status(500).send({ msg: error.message });
     }
-} ;
+};
 
-exports.patientSignUp = async (req , res) => {
-    const { name , email , password , phone } = req.body ;
-    if (!name || !email || !password || !phone) {
-        return res.status(400).send({ msg : "Please provide all the required fields ❌" }) ;
+exports.shopkeeperSignUp = async (req, res) => {
+    const { ownerName, email, password, shopName, phoneNumber, address } = req.body;
+
+    if(!ownerName || !email || !password || !shopName || !phoneNumber || !address) {
+        return res.status(400).send({ msg: "Please provide all the required fields ❌" });
     }
+
+    const hashedPassword = await hashPassword(password);
+    const query = `${address.city} ${address.state} India` ;
+    const coords = await getCoordinates(query);
+
+    address.location = {
+        type : "Point",
+        coordinates : coords
+    };
 
     try {
-        const hashedPassword = await bcrypt.hash(password , 10) ;
-        
-        const user = await User.create({
-            name , email , password : hashedPassword , role : "patient" , phone
-        }) ;
-        
-        
-        const token = await generateToken(user , user.role) ;
-        
-        setTokenCookie(res , token) ;
-        return res.status(201).send({ msg : "User created successfully ✅"}) ;
+        await new Shopkeeper({
+            ownerName, email, password: hashedPassword, shopName, phoneNumber, address
+        }).save();
+        return res.status(201).send({ msg: "Shopkeeper created successfully ✅" });
     } catch (error) {
-        return res.status(500).send({ msg : `${error.errmsg}❌` }) ;
+        return res.status(500).send({ msg: error.message });
     }
-} ;
+};
 
-exports.shopSignUp = async (req , res) => {
-    const { name , email , password , phone } = req.body ;
-    if (!name || !email || !password || !phone) {
-        return res.status(400).send({ msg : "Please provide all the required fields ❌" }) ;
-    }
-    
-    try {
-        const hashedPassword = await bcrypt.hash(password , 10) ;
-        const user = await User.create({
-            name , email , password : hashedPassword , role : "shop" , phone
-        }) ;
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
 
-        const token = await generateToken(user , user.role) ;
-        setTokenCookie(res , token) ;
-        return res.status(201).send({ msg : "User created successfully ✅"}) ;
-    } catch (error) {
-        return res.status(500).send({ msg : `${error.message}❌` }) ;
-    }
-} ;
-
-exports.login = async (req , res) => {
-    const { email , password } = req.body ;
-
-    if(!email || !password) {
-        return res.status(400).send({ msg : "Please provide all the required fields ❌" }) ;
+    if (!email || !password) {
+        return res.status(400).send({ msg: "Please provide all the required fields ❌" });
     }
 
     try {
-        const existingUser = await User.findOne({ email }) ;
-        if(!existingUser) {
-            return res.status(404).send({ msg : "User not found ❌" }) ;
+        const existingDoctor = await Doctor.findOne({ email });
+        if(existingDoctor) {
+            const isPasswordCorrect = await bcrypt.compare(password, existingDoctor.password);
+            if(!isPasswordCorrect) {
+                return res.status(401).send({ msg: "Incorrect Credentials ❌" });
+            }
+            const token = await generateToken(existingDoctor, "doctor");
+            setTokenCookie(res, token);
+            return res.status(200).send({ msg: "Login successful ✅" });
         }
 
-        const isPasswordCorrect = await bcrypt.compare(password , existingUser.password) ;
-        
-        if(!isPasswordCorrect) {
-            return res.status(401).send({ msg : "Incorrect password ❌" }) ;
+        const existingPatient = await Patient.findOne({ email });
+        if(existingPatient) {
+            const isPasswordCorrect = await bcrypt.compare(password, existingPatient.password);
+            if(!isPasswordCorrect) {
+                return res.status(401).send({ msg: "Incorrect Credentials ❌" });
+            }
+            const token = await generateToken(existingPatient, "patient");
+            setTokenCookie(res, token);
+            return res.status(200).send({ msg: "Login successful ✅" });
         }
-        
-        console.log(isPasswordCorrect);
 
-
-        const token = await generateToken(existingUser , existingUser.role) ;
-        
-        setTokenCookie(res , token) ;
-        return res.status(200).send({ msg : "Login successful ✅" }) ;
-    } catch (error) {
-        return res.status(500).send({ msg : "Error logging in ❌" }) ;
+        const existingShopkeeper = await Shopkeeper.findOne({ email });
+        if(existingShopkeeper) {
+            const isPasswordCorrect = await bcrypt.compare(password, existingShopkeeper.password);
+            if(!isPasswordCorrect) {
+                return res.status(401).send({ msg: "Incorrect Credentials ❌" });
+            }
+            const token = await generateToken(existingShopkeeper, "shopkeeper");
+            setTokenCookie(res, token);
+            return res.status(200).send({ msg: "Login successful ✅" });
+        }
+    
+        return res.status(404).send({ msg: "User not found ❌" });
+    } catch(err) {
+        return res.status(500).send({ msg: err.message });
     }
-} ;
+};
