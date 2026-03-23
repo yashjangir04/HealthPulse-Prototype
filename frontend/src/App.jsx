@@ -4,6 +4,7 @@ import Authentication from "./pages/Authentication";
 import Landing from "./pages/Landing";
 import MediList from "./pages/MediList";
 import MeetingRoom from "./pages/MeetingRoom";
+import MedicineDelivery from "./pages/MedicineDelivery";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <Route
           path="/"
           element={
-            <MainLayout showNavbar={true} showSidebar={true} isFullHeighted={false}>
+            <MainLayout showNavbar={true} showSidebar={false} isFullHeighted={false}>
               <Landing />
             </MainLayout>
           }
@@ -48,6 +49,15 @@ function App() {
             </MainLayout>
           }
         ></Route>
+       
+        <Route
+          path="/delivery"
+          element={
+            <MainLayout showNavbar={true} showSidebar={true} isFullHeighted={false}>
+              <MedicineDelivery/>
+            </MainLayout>
+          }
+        ></Route> 
       </Routes>
     </BrowserRouter>
   );
