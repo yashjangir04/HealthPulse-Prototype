@@ -9,6 +9,8 @@ const cors = require("cors") ;
 const db = require("./config/db-config") ;
 const authRouter = require("./routes/authRouter") ;
 
+const authMiddleware = require("./middlewares/authMiddleware") ;
+
 app.use(express.urlencoded({ extended : true })) ;
 app.use(express.json()) ;
 app.use(cookieParser()) ;

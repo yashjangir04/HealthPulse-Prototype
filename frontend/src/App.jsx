@@ -5,6 +5,8 @@ import Landing from "./pages/Landing";
 import MediList from "./pages/MediList";
 import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/contact";
+import MedicineDelivery from "./pages/MedicineDelivery";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
@@ -35,9 +37,11 @@ function App() {
         <Route
           path="/medi-list"
           element={
-            <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
-              <MediList />
-            </MainLayout>
+            <ProtectedRoute>
+              <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
+                <MediList />
+              </MainLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
@@ -58,6 +62,15 @@ function App() {
             </MainLayout>
           }
         ></Route>
+       
+        <Route
+          path="/medicines"
+          element={
+            <MainLayout showNavbar={true} showSidebar={true} isFullHeighted={false}>
+              <MedicineDelivery/>
+            </MainLayout>
+          }
+        ></Route> 
       </Routes>
     </BrowserRouter>
   );
