@@ -8,7 +8,7 @@ const Footer = () => {
     <footer className="w-full bg-transparent">
       
       {/* THE WHITE CARD: Full width, thick blue border, matching your exact image */}
-      <div className="w-full bg-white rounded-t-[3rem] p-5 sm:p-6 md:p-10 lg:p-12 shadow-xl">
+      <div className="w-full bg-white rounded-t-[3rem] p-5 sm:p-6 md:p-10 lg:p-12 ">
         
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-6">
           

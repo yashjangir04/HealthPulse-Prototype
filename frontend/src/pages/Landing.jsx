@@ -5,12 +5,18 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 const Landing = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
+      
+      {/* Page Content */}
+      <main className="flex-grow">
         <HeroSection />
         <FeaturesSection />
-        <Footer />
+      </main>
 
-    </>
+      {/* Footer */}
+      <Footer />
+
+    </div>
   )
 }
 

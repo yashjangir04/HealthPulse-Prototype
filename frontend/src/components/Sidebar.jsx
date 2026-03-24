@@ -33,12 +33,12 @@ const Sidebar = ({
       : parts[0][0].toUpperCase();
   };
 
-  // TEAMMATE NOTE: Add backend logout API call here
+  //Add backend logout API call here
   const handleLogout = async () => {
     try {
-      // 1. Your teammate will add: await api.post('/logout') here
-      await logout(); // 2. Clears local state/tokens
-      navigate("/account/login"); // 3. Redirects user
+
+      await logout(); 
+      navigate("/account/login"); 
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -49,8 +49,8 @@ const Sidebar = ({
     { icon: <User size={20} />, label: "Profile", path: "/profile" },
     { icon: <Sparkles size={20} />, label: "AI Help", path: "/ai-help" },
     { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
-    { icon: <Users size={20} />, label: "Contacts", path: "/contacts" },
-    { icon: <Bell size={20} />, label: "Reminder", path: "/reminders" },
+    { icon: <Users size={20} />, label: "Contacts", path: "/contact" },
+    { icon: <Bell size={20} />, label: "Reminder", path: "/medi-list" },
     { icon: <UserRound size={20} />, label: "Connect", path: "/connect" },
   ];
 
