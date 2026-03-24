@@ -22,10 +22,13 @@ const ContactPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentContact, setCurrentContact] = useState(null);
   const [form, setForm] = useState({ name: "", phone: "", relation: "" });
-  const [loadingId, setLoadingId] = useState(null);
   const [toast, setToast] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
-
+  const [settings, setSettings] = useState({
+  sms: true,
+  calls: true,
+  gps: true,
+});
 
 //----------Toast Function--------------//
   const showToast = (msg, type = "success") => {
@@ -33,40 +36,40 @@ const ContactPage = () => {
     setTimeout(() => setToast(null), 3000);
   };
 
-//----------Save Contact Function------
+  // Get initials
+  const getInitials = (name) =>
+    name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+
+  // Save Contact
   const handleSave = () => {
     if (!form.name || !form.phone) {
       showToast("Please fill all required fields", "error");
       return;
     }
 
-    if (editMode) {
-      setData((prev) => ({
-        ...prev,
-        secondary: prev.secondary.map((c) =>
-          c.id === currentContact.id ? { ...c, ...form } : c
-        ),
-      }));
-      showToast("Contact details updated successfully");
-    } else {
-      const newContact = {
-        id: Date.now(),
-        ...form,
-        initials: form.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2),
-      };
-      setData((prev) => ({ ...prev, secondary: [...prev.secondary, newContact] }));
-      showToast("New emergency contact added");
+    // 🌍 Global phone validation (E.164)
+    if (!/^\+[1-9]\d{7,14}$/.test(form.phone)) {
+      showToast("Enter valid number (+xx xxxxxx)", "error");
+      return;
     }
+
+    const newContact = {
+      id: Date.now(),
+      ...form,
+      initials: getInitials(form.name),
+    };
+
+    setData((prev) => ({
+      ...prev,
+      secondary: [...prev.secondary, newContact],
+    }));
+
+    showToast("New contact added");
     setIsModalOpen(false);
+    setForm({ name: "", phone: "", relation: "" });
   };
 
-  const handleNotify = async (contact) => {
-    setLoadingId(contact.id);
-    await new Promise((res) => setTimeout(res, 800));
-    showToast(`Emergency alert sent to ${contact.name}`);
-    setLoadingId(null);
-  };
-
+  const isSecondaryEmpty = data.secondary.length === 0;
 
   //-------Main Page Layout--------
   return (
@@ -100,20 +103,23 @@ const ContactPage = () => {
             {/* PRIMARY SECTION */}
             <section>
               <h3 className="text-s font-bold uppercase tracking-widest text-slate-400 mb-6">Primary Contacts</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
+              <div className={`grid gap-6 ${
+              data.secondary.length === 0 
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                : "grid-cols-1 sm:grid-cols-2"
+            }`}>
                 {data.primary.map((c) => (
                   <ContactCard 
                     key={c.id} 
                     contact={c} 
                     primary 
-                    onNotify={() => handleNotify(c)} 
-                    loading={loadingId === c.id}
                   />
                 ))}
               </div>
             </section>
 
             {/* SECONDARY SECTION */}
+            {!isSecondaryEmpty && (
             <section>
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-s font-bold uppercase tracking-widest text-slate-400">Secondary Contacts</h3>
@@ -124,19 +130,36 @@ const ContactPage = () => {
                   <Plus size={16} /> Add New
                 </button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {data.secondary.map((c) => (
-                  <ContactCard 
-                    key={c.id} 
-                    contact={c} 
-                    onNotify={() => handleNotify(c)}
-                    onEdit={() => { setEditMode(true); setCurrentContact(c); setForm({name: c.name, phone: c.phone, relation: c.relation || "" }); setIsModalOpen(true); }}
-                    onDelete={() => { setData(prev => ({...prev, secondary: prev.secondary.filter(x => x.id !== c.id)})); showToast("Contact removed", "error"); }}
-                    loading={loadingId === c.id}
-                  />
-                ))}
-              </div>
+          
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {data.secondary.map((c) => (
+                    <ContactCard
+                      key={c.id}
+                      contact={c}
+                      onDelete={() => {
+                        setData((prev) => ({
+                          ...prev,
+                          secondary: prev.secondary.filter((x) => x.id !== c.id),
+                        }));
+                        showToast("Deleted", "error");
+                      }}
+                    />
+                  ))}
+                </div>
             </section>
+            )}
+
+            {isSecondaryEmpty && (
+          <div className="text-center text-slate-400">
+            <p className="text-lg font-medium">No secondary contacts</p>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="mt-3 text-blue-600 font-semibold"
+            >
+              + Add Contact
+            </button>
+          </div>
+        )}
           </div>
         </div>
 
@@ -173,9 +196,23 @@ const ContactPage = () => {
                 <div className="h-px bg-slate-300 mb-4" />
 
                 <div className="space-y-4 mt-2">
-                  <Toggle label="SMS Alerts" active />
-                  <Toggle label="Automated Calls" active />
-                  <Toggle label="Share GPS Location" active />
+                  <Toggle 
+                    label="SMS Alerts" 
+                    active={settings.sms} 
+                    onToggle={() => setSettings(prev => ({ ...prev, sms: !prev.sms }))}
+                  />
+
+                  <Toggle 
+                    label="Automated Calls" 
+                    active={settings.calls} 
+                    onToggle={() => setSettings(prev => ({ ...prev, calls: !prev.calls }))}
+                  />
+
+                  <Toggle 
+                    label="Share GPS Location" 
+                    active={settings.gps} 
+                    onToggle={() => setSettings(prev => ({ ...prev, gps: !prev.gps }))}
+                  />
                 </div>
               </div>
             </div>
@@ -222,17 +259,25 @@ const ContactPage = () => {
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
                 <input
-                  placeholder="+91 00000 00000"
+                  placeholder="+91 9876543210"
                   value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all placeholder:text-slate-300"
+                  onChange={(e) => {
+                    let value = e.target.value.replace(/[^\d+]/g, "");
+
+                    if (value.includes("+")) {
+                      value = "+" + value.replace(/\+/g, "");
+                    }
+
+                    setForm({ ...form, phone: value });
+                  }}
+                  className="w-full p-3 border rounded-xl"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Relation</label>
                 <input
-                  placeholder="e.g. Friend, Colleague"
+                  placeholder="Relation"
                   value={form.relation}
                   onChange={(e) => setForm({ ...form, relation: e.target.value })}
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none placeholder:text-slate-300"
@@ -244,7 +289,7 @@ const ContactPage = () => {
               onClick={handleSave}
               className="w-full mt-10 bg-[#4C84FF] hover:bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-100 transition-all active:scale-[0.98]"
             >
-              {editMode ? "Update Contact" : "Save Contact"}
+              Save Contact
             </button>
           </div>
         </div>
@@ -256,13 +301,13 @@ const ContactPage = () => {
 };
 
 // COMPONENT: REFINED CONTACT CARD
-const ContactCard = ({ contact, primary, onNotify, onEdit, onDelete, loading }) => (
+const ContactCard = ({ contact, primary, onNotify, onDelete }) => (
   <div className={`group bg-white rounded-3xl p-6 border transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] animate-in fade-in ${
-    primary 
-    ? "border-blue-100 shadow-[0_10px_30px_rgba(59,130,246,0.15)] flex flex-col items-center text-center min-h-[220px]" 
-    : "border border-slate-400 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-100 flex flex-col justify-between h-[250px] relative transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02]"
+primary 
+? "border-blue-100 shadow-[0_10px_30px_rgba(59,130,246,0.15)] flex flex-col gap-3 py-5"
+: "border border-slate-400 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-100 flex flex-col gap-4 relative transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02]"
   }`}>
-    <div className={`flex items-center gap-4 ${primary ? "mb-4" : "mb-6"}`}>
+    <div className={`flex items-center gap-3 ${primary ? "mb-4" : "mb-6"}`}>
       <div className={`shrink-0 rounded-2xl font-bold flex items-center justify-center ${
         primary 
         ? "w-14 h-14 bg-blue-600 text-white text-lg" 
@@ -271,35 +316,24 @@ const ContactCard = ({ contact, primary, onNotify, onEdit, onDelete, loading }) 
         {contact.initials || contact.name.split(" ").map(n => n[0]).join("").toUpperCase()}
       </div>
 
-      <div>
-        <h4 className={`font-bold text-slate-900 truncate ${primary ? "text-lg" : "text-base"}`}>{contact.name}</h4>
-        <div className="flex items-center gap-2 text-slate-500 text-sm font-medium flex-wrap">
-          <span>{contact.relation || "Contact"}</span>
-          <span className="w-1 h-1 rounded-full bg-slate-300" />
-          <span className="whitespace-nowrap">{contact.phone}</span>
-        </div>
-      </div>
+      <div className="flex flex-col gap-1.5">
+  <h4 className={`font-bold text-slate-900 ${primary ? "text-lg" : "text-base"}`}>
+    {contact.name}
+  </h4>
+
+  <div className="flex items-center gap-2 text-slate-500 text-sm font-medium flex-wrap mt-1">
+    <span>{contact.relation || "Contact"}</span>
+    <span className="w-1 h-1 rounded-full bg-slate-300" />
+    <span className="whitespace-nowrap">{contact.phone}</span>
+  </div>
+</div>
     </div>
 
     <div className="w-full mt-auto">
-      <button
-        onClick={onNotify}
-        disabled={loading}
-        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
-          primary 
-          ? "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white" 
-          : "bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white"
-        }`}
-      >
-        <Bell size={14} className={loading ? "animate-spin" : ""} />
-        {loading ? "Notifying..." : "Notify Now"}
-      </button>
 
       {!primary && (
-        <div className="flex gap-2">
-          <button onClick={onEdit} className="p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 hover:scale-110">
-            <Edit2 size={14} />
-          </button>
+        <div className="flex gap-2 justify-end mt-2">
+          
           <button onClick={onDelete} className="p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200 hover:scale-110">
             <Trash2 size={14} />
           </button>
@@ -310,11 +344,21 @@ const ContactCard = ({ contact, primary, onNotify, onEdit, onDelete, loading }) 
 );
 
 // COMPONENT: SIMPLE TOGGLE
-const Toggle = ({ label, active }) => (
+const Toggle = ({ label, active, onToggle }) => (
   <div className="flex justify-between items-center">
     <span className="text-sm font-medium text-slate-600">{label}</span>
-    <div className={`w-10 h-5 rounded-full relative transition-colors cursor-pointer ${active ? "bg-emerald-400" : "bg-slate-200"}`}>
-      <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${active ? "right-1" : "left-1"}`} />
+
+    <div 
+      onClick={onToggle}
+      className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+        active ? "bg-emerald-400" : "bg-slate-200"
+      }`}
+    >
+      <div
+        className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${
+          active ? "right-1" : "left-1"
+        }`}
+      />
     </div>
   </div>
 );
