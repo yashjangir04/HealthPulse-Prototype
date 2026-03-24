@@ -140,117 +140,119 @@ const MediList = () => {
   };
 
   return (
-    <div className="poppins-regular w-full min-h-screen flex flex-col gap-6 p-4 md:p-6 items-center relative bg-white">
-      <div className="mediList-top flex flex-col md:flex-row justify-between items-center w-full gap-4 md:gap-0">
-        <div className="mediList-top-left-section flex flex-row gap-4 md:gap-5 items-center">
-          <div className="bg-blue-100 p-3 fancy-border-radius-1">
-            <PiPillFill className="text-[32px] text-blue-500" />
+    <div className="poppins-regular w-full min-h-screen flex flex-col gap-6 p-4 md:p-6 items-center relative bg-secondary">
+      <div className="medilistWrapper flex flex-col gap-10 bg-white p-4 rounded-3xl w-full">
+        <div className="mediList-top flex flex-col md:flex-row justify-between items-center w-full gap-4 md:gap-0">
+          <div className="mediList-top-left-section flex flex-row gap-4 md:gap-5 items-center">
+            <div className="bg-blue-100 p-3 fancy-border-radius-1">
+              <PiPillFill className="text-[32px] text-blue-500" />
+            </div>
+            <div className="mediL-top-text flex flex-col text-center md:text-left">
+              <h1 className="poppins-semibold text-xl md:text-2xl text-gray-800">
+                Medication Reminder
+              </h1>
+              <h3 className="text-gray-400 text-xs md:text-sm">
+                Keep track of your daily medications.
+              </h3>
+            </div>
           </div>
-          <div className="mediL-top-text flex flex-col text-center md:text-left">
-            <h1 className="poppins-semibold text-xl md:text-2xl text-gray-800">
-              Medication Reminder
+          <div className="mediList-top-right-section flex flex-row items-center gap-3">
+            <img
+              src="sundar-kanya.png"
+              alt="avatar"
+              className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
+            />
+            <h1 className="text-lg font-semibold text-gray-700 leading-tight">
+              {user.name}
             </h1>
-            <h3 className="text-gray-400 text-xs md:text-sm">
-              Keep track of your daily medications.
-            </h3>
           </div>
         </div>
-        <div className="mediList-top-right-section flex flex-row items-center gap-3">
-          <img
-            src="sundar-kanya.png"
-            alt="avatar"
-            className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
-          />
-          <h1 className="text-lg font-semibold text-gray-700 w-20 leading-tight">
-            {user.name}
-          </h1>
-        </div>
-      </div>
 
-      <div className="w-full bg-blue-50/50 rounded-3xl p-4 md:p-6 border border-blue-100/80">
-        <div className="flex flex-col xl:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
-          <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium w-full xl:w-auto text-center">
-            Your today's Medication schedule
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
-            <div className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium text-center flex-1">
-              Date : {date}-{months[month]}-{year}
+        <div className="w-full bg-white rounded-3xl p-4 md:p-6 border border-secondary/80">
+          <div className="flex flex-col xl:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
+            <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium w-full xl:w-auto text-center">
+              Your today's Medication schedule
             </div>
-            <div className="bg-orange-100 text-orange-600 px-4 py-2 rounded-lg text-sm font-medium text-center  text-nowrap flex-1">
-              Current time slot:{" "}
-              {hour < 12 ? "Morning" : hour < 17 ? "Afternoon" : "Evening"}
+            <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
+              <div className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium text-center flex-1">
+                Date : {date}-{months[month]}-{year}
+              </div>
+              <div className="bg-orange-100 text-orange-600 px-4 py-2 rounded-lg text-sm font-medium text-center  text-nowrap flex-1">
+                Current time slot:{" "}
+                {hour < 12 ? "Morning" : hour < 17 ? "Afternoon" : "Evening"}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full overflow-x-auto pb-4">
-          <div className="min-w-162.5">
-            <div className="grid grid-cols-5 gap-4 mb-4 px-4 text-gray-500 font-medium text-sm md:text-base">
-              <div className="col-span-1">Medicine</div>
-              <div className="text-center">Morning(M)</div>
-              <div className="text-center">Afternoon(A)</div>
-              <div className="text-center">Evening(E)</div>
-              <div className="text-center">Night(N)</div>
-            </div>
+          <div className="w-full overflow-x-auto pb-4">
+            <div className="min-w-162.5">
+              <div className="grid grid-cols-5 gap-4 mb-4 px-4 text-gray-500 font-medium text-sm md:text-base">
+                <div className="col-span-1">Medicine</div>
+                <div className="text-center">Morning(M)</div>
+                <div className="text-center">Afternoon(A)</div>
+                <div className="text-center">Evening(E)</div>
+                <div className="text-center">Night(N)</div>
+              </div>
 
-            <div className="flex flex-col gap-3">
-              {medications.map((med, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-5 gap-4 items-center bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm relative group"
-                >
-                  <div className="flex items-center justify-between col-span-1 pr-2">
-                    <div className="flex items-center gap-2 font-semibold text-gray-700 text-sm md:text-base">
-                      <IoIosArrowForward className="text-gray-400 shrink-0" />
-                      <span className="truncate" title={med.name}>
-                        {med.name}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleDelete(index)}
-                      className="text-red-300 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50 cursor-pointer"
-                      title="Delete Medication"
-                    >
-                      <PiTrashBold size={16} />
-                    </button>
-                  </div>
-
-                  {/* Schedule Slots */}
-                  {["M", "A", "E", "N"].map((slot) => (
-                    <div key={slot} className="flex justify-center">
-                      <div
-                        onClick={() => handleSlotClick(index, slot)}
-                        className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border font-bold text-sm md:text-base ${med.schedule[slot] === "immediate" ? "cursor-pointer" : ""} ${getStatusClass(med.schedule[slot])}`}
-                      >
-                        {slot}
+              <div className="flex flex-col gap-3">
+                {medications.map((med, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-5 gap-4 items-center bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm relative group"
+                  >
+                    <div className="flex items-center justify-between col-span-1 pr-2">
+                      <div className="flex items-center gap-2 font-semibold text-gray-700 text-sm md:text-base">
+                        <IoIosArrowForward className="text-gray-400 shrink-0" />
+                        <span className="truncate" title={med.name}>
+                          {med.name}
+                        </span>
                       </div>
+                      <button
+                        onClick={() => handleDelete(index)}
+                        className="text-red-300 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50 cursor-pointer"
+                        title="Delete Medication"
+                      >
+                        <PiTrashBold size={16} />
+                      </button>
                     </div>
-                  ))}
-                </div>
-              ))}
 
-              {medications.length === 0 && (
-                <div className="text-center py-6 text-gray-400 text-sm">
-                  No medications scheduled. Add one below!
-                </div>
-              )}
+                    {/* Schedule Slots */}
+                    {["M", "A", "E", "N"].map((slot) => (
+                      <div key={slot} className="flex justify-center">
+                        <div
+                          onClick={() => handleSlotClick(index, slot)}
+                          className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border font-bold text-sm md:text-base ${med.schedule[slot] === "immediate" ? "cursor-pointer" : ""} ${getStatusClass(med.schedule[slot])}`}
+                        >
+                          {slot}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                {medications.length === 0 && (
+                  <div className="text-center py-6 text-gray-400 text-sm">
+                    No medications scheduled. Add one below!
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Add Button */}
-        <div className="flex justify-center mt-6 md:mt-8">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95 text-sm md:text-base cursor-pointer"
-          >
-            <PiPlusBold /> Add Medication
-          </button>
+          {/* Add Button */}
+          <div className="flex justify-center mt-6 md:mt-8">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95 text-sm md:text-base cursor-pointer"
+            >
+              <PiPlusBold /> Add Medication
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="w-full px-2 mt-2 mb-8">
-        <div className="flex flex-wrap justify-center md:justify-between gap-3 md:gap-6 text-xs md:text-sm font-medium text-gray-500">
-          <div className="flex items-center gap-2">
+      <div className="w-full px-2 mt-2 mb-8 bg-white p-4 rounded-2xl">
+        <div className="flex flex-wrap justify-center md:justify-between gap-3 md:gap-6 text-xs md:text-sm font-medium text-gray-500 px-4">
+          <div className="flex items-center gap-2 px">
             <span className="w-5 h-5 rounded bg-green-100 flex items-center justify-center text-[10px] text-green-600 border border-green-200">
               M
             </span>{" "}
