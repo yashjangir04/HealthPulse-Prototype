@@ -15,8 +15,11 @@ const initialData = {
     { id: 4, name: "Raj Kumar", initials: "RK", phone: "+91 2345678980" },
   ],
 };
+import { useAuth } from "../auth/AuthContext";
+import { CalculateAge } from "../utils/CalculateAge";
 
 const ContactPage = () => {
+  const { user } = useAuth() ;
   const [data, setData] = useState(initialData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -179,8 +182,8 @@ const ContactPage = () => {
                 />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-slate-900">Virushka Sharma</h4>
-                <p className="text-slate-500 font-medium text-sm">28 Years • Female</p>
+                <h4 className="text-lg font-bold text-slate-900">{user.name}</h4>
+                <p className="text-slate-500 font-medium text-sm">{CalculateAge(user.dob)} Years • {user.gender}</p>
               </div>
             </div>
 
@@ -188,7 +191,7 @@ const ContactPage = () => {
               <div className="bg-slate-100 rounded-3xl p-6 border border-slate-200">
                 <p className="text-sm text-slate-500 mb-2">Your Phone</p>
               <div className="h-px bg-slate-300 mb-3" />
-                <p className="text-lg font-semibold text-slate-700">+91 98XXX XXX41</p>
+                <p className="text-lg font-semibold text-slate-700">+91 {user.phoneNumber.slice(0,5)} {user.phoneNumber.slice(5)}</p>
               </div>
               
               <div className="bg-slate-100 rounded-3xl p-6 border border-slate-200 flex flex-col flex-1">

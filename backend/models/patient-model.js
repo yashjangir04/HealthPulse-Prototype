@@ -82,6 +82,9 @@ const patientSchema = new mongoose.Schema({
     phoneNumber: {
       type: String,
       required: true
+    },
+    relation: {
+      type: String,
     }
   }],
   medicalHistory: [{ type: String }],
