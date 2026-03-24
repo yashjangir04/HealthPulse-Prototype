@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { login , getMe } from "../api/auth";
 import { useAuth } from "../auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const SignInForm = ({ buttonClasses, buttonForGFT }) => {
-  const { Login } = useAuth() ;
+  const navigate = useNavigate();
+  const { user , Login } = useAuth() ;
   // 1. Create state for the inputs
   const [formData, setFormData] = useState({
     email: "",
@@ -35,7 +37,9 @@ const SignInForm = ({ buttonClasses, buttonForGFT }) => {
       const res = await getMe() ;
       
       Login(res.data.user);
+      
       console.log("Login successful, user state updated.");
+      navigate("/") ;
 
     } catch (error) {
       setErrorMessage(error.message);

@@ -15,6 +15,9 @@ const doctorSchema = new Schema({
         type: String,
         required: true
     },
+    avatarUrl: {
+        type: String,
+    },
     dob: {
         type: Date,
         required: true

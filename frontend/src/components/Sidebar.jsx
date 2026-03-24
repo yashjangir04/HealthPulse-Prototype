@@ -36,9 +36,8 @@ const Sidebar = ({
   //Add backend logout API call here
   const handleLogout = async () => {
     try {
-
       await logout(); 
-      navigate("/account/login"); 
+      navigate("/"); 
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -51,7 +50,7 @@ const Sidebar = ({
     { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
     { icon: <Users size={20} />, label: "Contacts", path: "/contact" },
     { icon: <Bell size={20} />, label: "Reminder", path: "/medi-list" },
-    { icon: <UserRound size={20} />, label: "Connect", path: "/connect" },
+    { icon: <UserRound size={20} />, label: "Connect", path: "/meeting/room/yashvi" },
   ];
 
   return (
@@ -148,7 +147,7 @@ const Sidebar = ({
               <button
                 type="button"
                 onClick={handleLogout}
-                className={`flex items-center gap-3 text-red-500 font-bold text-[14px] transition-all duration-200 p-2.5 rounded-xl hover:bg-red-50
+                className={`flex items-center cursor-pointer gap-3 text-red-500 font-bold text-[14px] transition-all duration-200 p-2.5 rounded-xl hover:bg-red-50
                   ${isCollapsed && !isOpen ? "justify-center w-10 h-10 p-0" : "w-full"}`}
               >
                 <LogOut size={20} strokeWidth={2.5} />

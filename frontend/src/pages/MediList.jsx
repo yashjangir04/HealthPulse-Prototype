@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { PiPillFill, PiPlusBold, PiTrashBold, PiXBold } from "react-icons/pi";
 import { IoIosArrowForward } from "react-icons/io";
+import { useAuth } from "../auth/AuthContext";
 
 const MediList = () => {
+  const { user } = useAuth();
+
   const date = new Date().getDate();
   const month = new Date().getMonth();
   const year = new Date().getFullYear();
@@ -23,6 +26,8 @@ const MediList = () => {
   ];
 
   useEffect(() => {
+    console.log(user);
+    
     const interval = setInterval(() => {
       setHour(new Date().getHours());
     }, 60000); // update every 1 min
@@ -157,7 +162,7 @@ const MediList = () => {
             className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
           />
           <h1 className="text-lg font-semibold text-gray-700 w-20 leading-tight">
-            Virushka Sharma
+            {user.name}
           </h1>
         </div>
       </div>

@@ -18,6 +18,12 @@ const patientSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  avatarUrl: {
+    type: String,
+  },
+  documents: [
+    {type: String}
+  ],
   gender: {
     type: String,
     enum: ["Male", "Female", "Other"],
