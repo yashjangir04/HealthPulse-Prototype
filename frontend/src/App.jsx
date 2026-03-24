@@ -15,7 +15,7 @@ function App() {
         <Route
           path="/"
           element={
-            <MainLayout showNavbar={true} showSidebar={true} isFullHeighted={false}>
+            <MainLayout showNavbar={true} showSidebar={false} isFullHeighted={false}>
               <Landing />
             </MainLayout>
           }
