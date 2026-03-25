@@ -25,6 +25,8 @@ onChange={handleChange}
 type="email"
 name="email"
 placeholder="Email"
+value={formData.email}
+onChange={handleChange}
  className="border p-3 rounded-lg"
 />
 
@@ -32,6 +34,8 @@ placeholder="Email"
 type="password"
 name="password"
 placeholder="Password"
+value={formData.password}
+onChange={handleChange}
  className="border p-3 rounded-lg"
 />
 
