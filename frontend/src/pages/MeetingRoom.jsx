@@ -8,17 +8,13 @@ import { IoMdSend } from "react-icons/io";
 import { IoDocumentTextOutline, IoWarningOutline } from "react-icons/io5";
 import { TbPill } from "react-icons/tb";
 import Sidebar from "../components/Sidebar";
+import { useAuth } from "../auth/AuthContext";
 
 const MeetingRoom = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { roomID } = useParams();
-  
-  const user = {
-    name: "Yash Jangir",
-    // role: "doctor",
-    role : "patient",
-  };
+  const { user } = useAuth();
 
   // FAKE DATA STATE: Replace this with your API call later
   const [patientData, setPatientData] = useState({

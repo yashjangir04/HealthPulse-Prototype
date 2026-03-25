@@ -1,4 +1,4 @@
-const mongoose = require("mongoose") ;
+const mongoose = require("mongoose");
 
 const shopkeeperSchema = new mongoose.Schema({
     ownerName: {
@@ -18,10 +18,13 @@ const shopkeeperSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true
-    }, 
+    },
     phoneNumber: {
         type: String,
         required: true
+    },
+    avatarUrl: {
+        type: String,
     },
     address: {
         fullAddress: { type: String, required: true },

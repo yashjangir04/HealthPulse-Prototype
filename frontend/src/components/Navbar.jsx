@@ -92,7 +92,7 @@ const Navbar = () => {
             {/* Logout Text (replaces Login) */}
             <button
               onClick={logout}
-              className="relative group text-slate-600 hover:text-red-500 transition-colors"
+              className="relative group text-red-400 cursor-pointer hover:text-red-500 transition-colors poppins-bold text-lg"
             >
               Logout
               <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-[3px] bg-red-500 rounded-full transition-all duration-300 group-hover:w-full"></span>

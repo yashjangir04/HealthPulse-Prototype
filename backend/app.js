@@ -8,6 +8,7 @@ const cors = require("cors") ;
 
 const db = require("./config/db-config") ;
 const authRouter = require("./routes/authRouter") ;
+const communicationRouter = require("./routes/communicationRouter") ;
 
 const authMiddleware = require("./middlewares/authMiddleware") ;
 
@@ -24,6 +25,7 @@ const PORT = process.env.PORT || 5000 ;
 
 // Main Routes
 app.use("/api/auth" , authRouter) ;
+app.use("/api/communicate" , communicationRouter) ;
 
 // Default Routes
 app.get("/health" , (req , res) => {

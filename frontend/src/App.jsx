@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import Authentication from "./pages/Authentication";
+import Authentication from "./pages/SignInForm";
 import Landing from "./pages/Landing";
 import MediList from "./pages/MediList";
 import MeetingRoom from "./pages/MeetingRoom";
@@ -9,6 +9,11 @@ import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
 import Profile from "./pages/profile";
 
+import SignInForm from "./pages/SignInForm";
+import SignUpForm from "./pages/SignUpForm";
+import StepForm from "./pages/StepForm";
+import StepFormPatient from "./pages/StepFormPatient";
+import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 function App() {
   return (
     <BrowserRouter>
@@ -72,12 +77,54 @@ function App() {
             </MainLayout>
           }
         ></Route> 
-
+        
         <Route
           path="/profile"
           element={
             <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
-              <Profile />
+              <Contact />
+            </MainLayout>
+          }
+        ></Route>
+
+            <Route
+          path="/register"
+          element={
+            <MainLayout  showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <SignUpForm/>
+            </MainLayout>
+          }
+        ></Route> 
+            
+            <Route
+          path="/login"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <SignInForm/>
+            </MainLayout>
+          }
+        ></Route> 
+             <Route
+          path="/stepform"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <StepForm/>
+            </MainLayout>
+          }
+        ></Route>
+                  <Route
+          path="/stepformPatient"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <StepFormPatient/>
+            </MainLayout>
+          }
+        ></Route>
+        <Route
+          path="/stepformShopkeeper"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <StepFormShopkeeper/>
             </MainLayout>
           }
         ></Route>
