@@ -42,7 +42,9 @@ const SignInForm = () => {
       const res = await getMe() ;
       
       Login(res.data.user);
+      
       console.log("Login successful, user state updated.");
+      navigate("/") ;
 
     } catch (error) {
       setErrorMessage(error.message);

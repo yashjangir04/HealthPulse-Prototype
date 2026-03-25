@@ -141,7 +141,25 @@ exports.login = async (req, res) => {
 };
 
 exports.getMe = async (req, res) => {
-    return res.status(200).json({ user: req.user });
+    //     log.info("getMe() called");
+    const existingDoctor = await Doctor.findOne({ _id : req.user.id }).select("-password");
+    if (existingDoctor) {
+        return res.status(200).json({ user: existingDoctor });
+    }
+    
+    const existingPatient = await Patient.findOne({ _id : req.user.id }).select("-password");
+    if (existingPatient) {
+        return res.status(200).json({ user: existingPatient });
+    }
+    
+    const existingShopkeeper = await Shopkeeper.findOne({ _id : req.user.id }).select("-password");
+    if (existingShopkeeper) {
+        return res.status(200).json({ user: existingShopkeeper });
+    }
+
+    return res.status(404).send({ msg: "User not found ❌" });
+    // console.log(req.user);
+    // return res.status(200).json({ user: req.user });
 }
 
 exports.logout = async (req, res) => {

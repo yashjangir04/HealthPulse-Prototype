@@ -15,8 +15,11 @@ const initialData = {
     { id: 4, name: "Raj Kumar", initials: "RK", phone: "+91 2345678980" },
   ],
 };
+import { useAuth } from "../auth/AuthContext";
+import { CalculateAge } from "../utils/CalculateAge";
 
 const ContactPage = () => {
+  const { user } = useAuth() ;
   const [data, setData] = useState(initialData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -73,7 +76,7 @@ const ContactPage = () => {
 
   //-------Main Page Layout--------
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-800 p-8 flex">
+    <div className="min-h-screen bg-secondary font-sans text-slate-800 p-8 flex">
       
       {/* -------Toast Portal------- */}
       {toast && createPortal(
@@ -92,7 +95,8 @@ const ContactPage = () => {
         
         {/* -------Left Column: Contacts------- */}
         <div className="flex-1 bg-white rounded-[40px] shadow-sm border border-slate-100 p-6 sm:p-10 h-full">
-          <div className="flex items-center gap-3 mb-8">
+          {/* THIN SEPARATOR ADDED HERE (pb-6 border-b border-slate-200) */}
+          <div className="flex items-center gap-3 mb-8 pb-6 border-b border-slate-200">
             <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
               <Phone size={24} />
             </div>
@@ -167,8 +171,8 @@ const ContactPage = () => {
         <div className="w-full lg:w-[380px] flex flex-col">
           <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 p-8 overflow-hidden relative h-full flex flex-col h-full">
             
-            
-            <h2 className="text-3xl font-semibold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent mb-8">Profile Details</h2>
+            {/* THIN SEPARATOR ADDED HERE (pb-6 border-b border-slate-200) */}
+            <h2 className="text-3xl font-semibold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent mb-8 pb-6 border-b border-slate-200">Profile Details</h2>
             
             <div className="flex items-center gap-4 mb-8">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-200 overflow-hidden">
@@ -179,8 +183,8 @@ const ContactPage = () => {
                 />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-slate-900">Virushka Sharma</h4>
-                <p className="text-slate-500 font-medium text-sm">28 Years • Female</p>
+                <h4 className="text-lg font-bold text-slate-900">{user.name}</h4>
+                <p className="text-slate-500 font-medium text-sm">{CalculateAge(user.dob)} Years • {user.gender}</p>
               </div>
             </div>
 
@@ -188,7 +192,7 @@ const ContactPage = () => {
               <div className="bg-slate-100 rounded-3xl p-6 border border-slate-200">
                 <p className="text-sm text-slate-500 mb-2">Your Phone</p>
               <div className="h-px bg-slate-300 mb-3" />
-                <p className="text-lg font-semibold text-slate-700">+91 98XXX XXX41</p>
+                <p className="text-lg font-semibold text-slate-700">+91 {user.phoneNumber.slice(0,5)} {user.phoneNumber.slice(5)}</p>
               </div>
               
               <div className="bg-slate-100 rounded-3xl p-6 border border-slate-200 flex flex-col flex-1">
