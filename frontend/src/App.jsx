@@ -1,13 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import Authentication from "./pages/Authentication";
+import Authentication from "./pages/SignInForm";
 import Landing from "./pages/Landing";
 import MediList from "./pages/MediList";
 import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/contact";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
-
+import SignInForm from "./pages/SignInForm";
+import SignUpForm from "./pages/SignUpForm";
+import StepForm from "./pages/StepForm";
 function App() {
   return (
     <BrowserRouter>
@@ -71,6 +73,32 @@ function App() {
             </MainLayout>
           }
         ></Route> 
+            
+            <Route
+          path="/register"
+          element={
+            <MainLayout  showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <SignUpForm/>
+            </MainLayout>
+          }
+        ></Route> 
+            
+            <Route
+          path="/login"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <SignInForm/>
+            </MainLayout>
+          }
+        ></Route> 
+             <Route
+          path="/stepform"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <StepForm/>
+            </MainLayout>
+          }
+        ></Route>
       </Routes>
     </BrowserRouter>
   );

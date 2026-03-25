@@ -1,7 +1,15 @@
 import React from "react";
-
-const SignUpForm = ({ buttonClasses, buttonForGFT }) => {
+const buttonClasses =
+`w-full text-white bg-[#1B80FD] focus:ring-4 focus:outline-none 
+focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all 
+duration-200 transform hover:scale-[1.02] hover:shadow-md`;
+const buttonForGFT =
+`inline-flex w-full justify-center items-center rounded-lg border border-gray-300 bg-white 
+py-2.5 px-4 text-sm font-medium text-gray-500 hover:bg-gray-50 shadow-sm transition-all 
+duration-200 hover:shadow hover:border-gray-400`;
+const SignUpForm = () => {
   return (
+    <div className="flex items-center justify-center h-screen">
     <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0 border border-gray-100 shadow-primary/50">
       <div className="p-6 space-y-6 md:space-y-7 sm:p-8">
         <h1 className="text-xl font-bold leading-tight tracking-tight text-backgroundColor md:text-2xl text-center">
@@ -204,6 +212,7 @@ const SignUpForm = ({ buttonClasses, buttonForGFT }) => {
           Already have an account? Sign in
         </p>
       </div>
+    </div>
     </div>
   );
 };
