@@ -11,6 +11,7 @@ import SignInForm from "./pages/SignInForm";
 import SignUpForm from "./pages/SignUpForm";
 import StepForm from "./pages/StepForm";
 import StepFormPatient from "./pages/StepFormPatient";
+import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 function App() {
   return (
     <BrowserRouter>
@@ -105,6 +106,14 @@ function App() {
           element={
             <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
               <StepFormPatient/>
+            </MainLayout>
+          }
+        ></Route>
+                          <Route
+          path="/stepformShopkeeper"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <StepFormShopkeeper/>
             </MainLayout>
           }
         ></Route>

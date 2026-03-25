@@ -1,61 +1,49 @@
 import React, { useState } from "react";
 import Stepper from "../components/Stepper";
 import StepperControl from "../components/StepperControl";
-import PatientAccount from "../components/steps/PatientAccount";
-import PatientAddress from "../components/steps/PatientAddress";
-import PatientFinal from "../components/steps/PatientFinal";
-import PatientPersonal from "../components/steps/PatientPersonal";
-import EmergencyContact from "../components/steps/EmergencyContact";
-const StepFormPatient = () => {
+import ShopAccount from "../components/steps/ShopAccount";
+import ShopAddress from "../components/steps/ShopAddress";
+import ShopDetails from "../components/steps/ShopDetails";
+import ShopFinal from "../components/steps/ShopFinal";
+const StepFormShopkeeper = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
 
   const steps = [
-    "Account",
-    "Personal",
-    "Address",
-    "Emergency Contact",
-    "Complete"
+     "Account",
+     "Shop Details",
+     "Address",
+     "Review"
   ];
   const [formData, setFormData] = useState({
-    name: "",
+    ownerName: "",
     email: "",
     password: "",
-    dob: "",
-    gender: "",
+    shopName: "",
     phoneNumber: "",
-    bloodGroup: "",
     address: {
       fullAddress: "",
       city: "",
       state: "",
       pincode: ""
-    },
-    secondaryContacts: [
-      {
-        name: "",
-        phoneNumber: ""
-      }
-    ]
+    }
   });
   const displayStep = (step) => {
     switch (step) {
   
       case 1:
-        return <PatientAccount formData={formData} setFormData={setFormData} />;
+        return <ShopAccount formData={formData} setFormData={setFormData} />;
   
       case 2:
-        return <PatientPersonal formData={formData} setFormData={setFormData} />;
+        return <ShopDetails formData={formData} setFormData={setFormData} />;
   
       case 3:
-        return <PatientAddress formData={formData} setFormData={setFormData} />;
+        return <ShopAddress formData={formData} setFormData={setFormData} />;
   
       case 4:
-        return <EmergencyContact formData={formData} setFormData={setFormData} />;
+        return <ShopFinal formData={formData} setFormData={setFormData} />;
   
-      case 5:
-        return <PatientFinal formData={formData} />;
-  
+   
       default:
         return null;
     }
@@ -76,7 +64,7 @@ const StepFormPatient = () => {
   const handleSubmit = async () => {
     try {
 
-      const res = await fetch("/api/Patient/register", {
+      const res = await fetch("/api/Shopkeeper/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -85,7 +73,7 @@ const StepFormPatient = () => {
       });
 
       const data = await res.json();
-      console.log("Patient registered:", data);
+      console.log("Shopkeeper registered:", data);
 
     } catch (error) {
       console.log("Error:", error);
@@ -104,7 +92,7 @@ const StepFormPatient = () => {
           <div className="text-center mb-6">
 
             <h1 className="text-2xl font-semibold text-gray-800">
-              Patient Registration
+              Shopkeeper Registration
             </h1>
 
           </div>
@@ -144,4 +132,4 @@ const StepFormPatient = () => {
   );
 };
 
-export default StepFormPatient;
+export default StepFormShopkeeper;
