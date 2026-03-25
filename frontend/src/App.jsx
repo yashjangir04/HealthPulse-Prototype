@@ -7,6 +7,7 @@ import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/contact";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./pages/profile";
 
 function App() {
   return (
@@ -71,6 +72,15 @@ function App() {
             </MainLayout>
           }
         ></Route> 
+
+        <Route
+          path="/profile"
+          element={
+            <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
+              <Profile />
+            </MainLayout>
+          }
+        ></Route>
       </Routes>
     </BrowserRouter>
   );
