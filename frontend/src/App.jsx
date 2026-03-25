@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import SignInForm from "./pages/SignInForm";
 import SignUpForm from "./pages/SignUpForm";
 import StepForm from "./pages/StepForm";
+import StepFormPatient from "./pages/StepFormPatient";
 function App() {
   return (
     <BrowserRouter>
@@ -96,6 +97,14 @@ function App() {
           element={
             <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
               <StepForm/>
+            </MainLayout>
+          }
+        ></Route>
+                  <Route
+          path="/stepformPatient"
+          element={
+            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
+              <StepFormPatient/>
             </MainLayout>
           }
         ></Route>

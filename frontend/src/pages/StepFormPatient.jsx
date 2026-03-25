@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import Stepper from "../components/Stepper";
 import StepperControl from "../components/StepperControl";
-
-import Account from "../components/steps/Account";
-import Personal from "../components/steps/Personal";
-import Professional from "../components/steps/Professional";
-import Address from "../components/steps/Address";
-import Final from "../components/steps/Final";
-
-const StepForm = () => {
+import PatientAccount from "../components/steps/PatientAccount";
+import PatientAddress from "../components/steps/PatientAddress";
+import PatientFinal from "../components/steps/PatientFinal";
+import PatientPersonal from "../components/steps/PatientPersonal";
+import EmergencyContact from "../components/steps/EmergencyContact";
+const StepFormPatient = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -19,7 +17,6 @@ const StepForm = () => {
     "Emergency Contact",
     "Complete"
   ];
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,34 +24,38 @@ const StepForm = () => {
     dob: "",
     gender: "",
     phoneNumber: "",
-    specialization: "",
-    qualification: "",
-    university: "",
+    bloodGroup: "",
     address: {
       fullAddress: "",
       city: "",
       state: "",
       pincode: ""
-    }
+    },
+    secondaryContacts: [
+      {
+        name: "",
+        phoneNumber: ""
+      }
+    ]
   });
-
   const displayStep = (step) => {
     switch (step) {
+  
       case 1:
-        return <Account formData={formData} setFormData={setFormData} />;
-
+        return <PatientAccount formData={formData} setFormData={setFormData} />;
+  
       case 2:
-        return <Personal formData={formData} setFormData={setFormData} />;
-
+        return <PatientPersonal formData={formData} setFormData={setFormData} />;
+  
       case 3:
-        return <Professional formData={formData} setFormData={setFormData} />;
-
+        return <PatientAddress formData={formData} setFormData={setFormData} />;
+  
       case 4:
-        return <Address formData={formData} setFormData={setFormData} />;
-
+        return <EmergencyContact formData={formData} setFormData={setFormData} />;
+  
       case 5:
-        return <Final formData={formData} />;
-
+        return <PatientFinal formData={formData} />;
+  
       default:
         return null;
     }
@@ -75,7 +76,7 @@ const StepForm = () => {
   const handleSubmit = async () => {
     try {
 
-      const res = await fetch("/api/doctor/register", {
+      const res = await fetch("/api/Patient/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -103,12 +104,8 @@ const StepForm = () => {
           <div className="text-center mb-6">
 
             <h1 className="text-2xl font-semibold text-gray-800">
-              Doctor Registration
+              Patient Registration
             </h1>
-
-            <p className="text-sm text-gray-500 mt-1">
-              Complete the steps below to create your doctor profile
-            </p>
 
           </div>
 
@@ -147,4 +144,4 @@ const StepForm = () => {
   );
 };
 
-export default StepForm;
+export default StepFormPatient;
