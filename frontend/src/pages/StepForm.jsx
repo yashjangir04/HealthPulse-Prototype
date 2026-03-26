@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import Stepper from "../components/Stepper";
-import StepperControl from "../components/StepperControl";
+import React, { useState } from 'react';
+import StepperControl from '../components/StepperControl';
+import Stepper from '../components/Stepper';
 
-import Account from "../components/steps/Account";
-import Personal from "../components/steps/Personal";
-import Professional from "../components/steps/Professional";
-import Address from "../components/steps/Address";
-import Final from "../components/steps/Final";
-
+import Final from '../components/steps/Final';
+import Personal from '../components/steps/Personal';
+import Address from '../components/steps/Address';
+import Professional from '../components/steps/Professional';
+import Account from '../components/steps/Account';
+import { signupDoctor } from '../api/auth';
 const StepForm = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -15,8 +15,8 @@ const StepForm = () => {
   const steps = [
     "Account",
     "Personal",
+    "Professional",
     "Address",
-    "Emergency Contact",
     "Complete"
   ];
 
@@ -40,6 +40,7 @@ const StepForm = () => {
 
   const displayStep = (step) => {
     switch (step) {
+
       case 1:
         return <Account formData={formData} setFormData={setFormData} />;
 
@@ -60,7 +61,9 @@ const StepForm = () => {
     }
   };
 
+  // Step navigation
   const handleClick = (direction) => {
+
     let newStep = currentStep;
 
     direction === "next"
@@ -70,49 +73,35 @@ const StepForm = () => {
     if (newStep > 0 && newStep <= steps.length) {
       setCurrentStep(newStep);
     }
+
   };
 
+  // API call on submit
   const handleSubmit = async () => {
     try {
-
-      const res = await fetch("/api/doctor/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-      console.log("Doctor registered:", data);
-
+  
+      const response = await signupDoctor(formData);
+  
+      console.log("DOCTOR registered:", response.data);
+  
+      alert("Registration successful");
+  
     } catch (error) {
-      console.log("Error:", error);
+  
+      console.log("Error:", error.response?.data || error.message);
+  
+      alert("Registration failed");
+  
     }
-  };
+  }; 
 
   return (
 
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
 
-      <div className="w-full bg-white rounded-xl shadow-xl sm:max-w-xl border border-gray-100">
+      <div className="w-full bg-white rounded-lg shadow-xl sm:max-w-lg border border-gray-100">
 
-        <div className="p-8">
-
-          {/* Header */}
-          <div className="text-center mb-6">
-
-            <h1 className="text-2xl font-semibold text-gray-800">
-              Doctor Registration
-            </h1>
-
-            <p className="text-sm text-gray-500 mt-1">
-              Complete the steps below to create your doctor profile
-            </p>
-
-          </div>
-
-          <div className="border-t border-gray-200 mb-6"></div>
+        <div className="p-8 space-y-6">
 
           {/* Stepper */}
           <Stepper
@@ -120,30 +109,25 @@ const StepForm = () => {
             currentStep={currentStep}
           />
 
-          {/* Form Content */}
-          <div className="py-8 min-h-[280px]">
-
+          {/* Step Content */}
+          <div className="py-6 min-h-[280px]">
             {displayStep(currentStep)}
-
           </div>
 
-          <div className="border-t border-gray-200 mt-4 pt-6">
-
-            {/* Controls */}
-            <StepperControl
-              handleClick={handleClick}
-              currentStep={currentStep}
-              steps={steps}
-              handleSubmit={handleSubmit}
-            />
-
-          </div>
+          {/* Controls */}
+          <StepperControl
+            handleClick={handleClick}
+            handleSubmit={handleSubmit}
+            currentStep={currentStep}
+            steps={steps}
+          />
 
         </div>
 
       </div>
 
     </div>
+
   );
 };
 

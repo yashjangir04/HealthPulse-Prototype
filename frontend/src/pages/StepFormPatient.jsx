@@ -6,6 +6,7 @@ import PatientAddress from "../components/steps/PatientAddress";
 import PatientFinal from "../components/steps/PatientFinal";
 import PatientPersonal from "../components/steps/PatientPersonal";
 import EmergencyContact from "../components/steps/EmergencyContact";
+import { signupPatient } from "../api/auth";
 const StepFormPatient = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -73,24 +74,24 @@ const StepFormPatient = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    try {
-
-      const res = await fetch("/api/Patient/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-      console.log("Patient registered:", data);
-
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
+  
+    const handleSubmit = async () => {
+        try {
+      
+          const response = await signupPatient(formData);
+      
+          console.log("Patient registered:", response.data);
+      
+          alert("Registration successful");
+      
+        } catch (error) {
+      
+          console.log("Error:", error.response?.data || error.message);
+      
+          alert("Registration failed");
+      
+        }
+      };
 
   return (
 
