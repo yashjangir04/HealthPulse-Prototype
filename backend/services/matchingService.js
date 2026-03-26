@@ -1,6 +1,13 @@
 // ‼️Attach user requirement(doctor speciality) in the User data with request
 
-const crypto = require('crypto');
+const crypto = require('crypto') ;
+const Appointment = require("../models/appointment-model") ;
+
+let io = null;
+
+const setIO = (_io) => {
+    io = _io;
+};
 
 const doctors = {
     general: new Set(),
@@ -40,7 +47,7 @@ const removePatient = (patient) => {
     if (patientQueue[requirement]) {
         patientQueue[requirement] = patientQueue[requirement].filter((p) => p._id !== patient._id);
     }
-    tryMatch() ;
+    tryMatch();
 }
 
 const removeDoctor = (doctor) => {
@@ -53,7 +60,7 @@ const removeDoctor = (doctor) => {
             )
         );
     }
-    tryMatch() ;
+    tryMatch();
 }
 
 // helper function
@@ -95,12 +102,27 @@ const tryMatch = () => {
     }
 }
 
-const createRoom = (doctor, patient) => {
+const createRoom = async (doctor, patient) => {
     let roomID = crypto.randomUUID();
-    console.log(`Room ID: ${roomID} , Patient : ${patient._id} and Doctor : ${doctor._id}`);
+    let payload = {
+        doctorID: doctor._id , 
+        patientID: patient._id ,
+        roomID: roomID
+    }
+
+    let date = new Date ;
+    await Appointment.create({
+        roomID ,
+        startTime : date ,
+        doctorID : doctor._id ,
+        patientID : patient._id
+    });
+    io.to(doctor.socket).emit("matched" , payload) ;
+    io.to(patient.socket).emit("matched" , payload) ;
 }
 
 module.exports = {
+    setIO,
     addDoctor,
     addPatient,
     removeDoctor,

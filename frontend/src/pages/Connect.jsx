@@ -1,17 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Added for navigation
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 
 const Connect = () => {
   const { user } = useAuth();
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
   
-  // Store the entire selected object to have access to both label and value
+  // --- Patient State ---
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Mapped array of objects with labels for UI and values for routing
   const specializations = [
     { label: "Cardiologist (Heart)", value: "cardiologist" },
     { label: "Dermatologist (Skin)", value: "dermatologist" },
@@ -32,20 +31,70 @@ const Connect = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // --- Handlers ---
   const handleSpecialistSubmit = (e) => {
     e.preventDefault();
     if (selectedSpecialty) {
-      // Navigate to the desired link with the value as a parameter
-      // Example route: /doctors?specialty=cardiologist
-      navigate(`/doctors?specialty=${selectedSpecialty.value}`); 
+      navigate(`/lobby/${selectedSpecialty.value.toLowerCase()}`); 
     }
   };
 
   const handleGeneralDoctor = () => {
-    // Navigate to general doctor route
-    navigate('/doctors?specialty=general'); 
+    navigate('/lobby/general'); 
   };
 
+  const handleDoctorGoOnline = () => {
+    // Navigate to the doctor's specific waiting room/dashboard
+    navigate(`/lobby/${user.specialization.toLowerCase()}`);
+  };
+
+  // ==========================================
+  // DOCTOR VIEW
+  // ==========================================
+  if (user?.role === 'doctor') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(to bottom right, #eef5ff, #e0efff)' }}>
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-blue-50 text-center">
+          
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+              <svg className="w-10 h-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h2 className="poppins-bold text-3xl text-gray-900 mb-2">
+              Doctor <span className="text-blue-500">Portal</span>
+            </h2>
+            <p className="inter-regular text-gray-500 text-sm">
+              Welcome back, Dr. {user?.name || 'Guest'}. 
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-100">
+            <p className="inter-medium text-gray-700 mb-2">Current Status</p>
+            <div className="flex items-center justify-center gap-2">
+              <span className="relative flex h-3 w-3">
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+              </span>
+              <span className="inter-regular text-gray-500 text-sm">Offline — Not taking patients</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleDoctorGoOnline}
+            className="w-full py-4 px-4 cursor-pointer rounded-full poppins-semibold text-white bg-blue-500 hover:bg-blue-600 shadow-md hover:shadow-blue-500/30 transition-all duration-300"
+          >
+            Go Online & Enter Lobby
+          </button>
+
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // PATIENT VIEW
+  // ==========================================
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(to bottom right, #eef5ff, #e0efff)' }}>
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-blue-50">
@@ -72,7 +121,6 @@ const Connect = () => {
                 isOpen ? 'border-blue-500 bg-white ring-4 ring-blue-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
               }`}
             >
-              {/* Display the label of the selected object, or fallback text */}
               <span className={`inter-regular ${selectedSpecialty ? 'text-gray-900' : 'text-gray-400'}`}>
                 {selectedSpecialty ? selectedSpecialty.label : 'Select a specialization...'}
               </span>

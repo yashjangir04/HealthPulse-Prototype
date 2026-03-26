@@ -99,13 +99,13 @@ exports.login = async (req, res) => {
             if (!isPasswordCorrect) {
                 return res.status(401).send({ msg: "Incorrect Credentials ❌" });
             }
-            
+
             const token = await generateToken(existingDoctor, "doctor");
             setTokenCookie(res, token);
-            
+
             return res.status(200).send({ msg: "Login successful ✅" });
         }
-        
+
 
         const existingPatient = await Patient.findOne({ email });
         if (existingPatient) {
@@ -118,7 +118,7 @@ exports.login = async (req, res) => {
             return res.status(200).send({ msg: "Login successful ✅" });
         }
 
-        
+
 
         const existingShopkeeper = await Shopkeeper.findOne({ email });
         if (existingShopkeeper) {
@@ -130,10 +130,6 @@ exports.login = async (req, res) => {
             setTokenCookie(res, token);
             return res.status(200).send({ msg: "Login successful ✅" });
         }
-
-
-        
-
         return res.status(404).send({ msg: "User not found ❌" });
     } catch (err) {
         return res.status(500).send({ msg: err.message });
@@ -141,28 +137,41 @@ exports.login = async (req, res) => {
 };
 
 exports.getMe = async (req, res) => {
-    const existingDoctor = await Doctor.findOne({ _id : req.user.id }).select("-password");
-    if (existingDoctor) {
-        existingDoctor.role = "doctor";
-        return res.status(200).json({ user: existingDoctor});
-    }
-    
-    const existingPatient = await Patient.findOne({ _id : req.user.id }).select("-password");
-    if (existingPatient) {
-        existingPatient.role = "patient";
-        return res.status(200).json({ user: existingPatient});
-    }
-    
-    const existingShopkeeper = await Shopkeeper.findOne({ _id : req.user.id }).select("-password");
-    if (existingShopkeeper) {
-        existingShopkeeper.role = "shopkeeper";
-        return res.status(200).json({ user: existingShopkeeper});
-    }
+    try {
+        let user = await Doctor.findById(req.user.id)
+            .select("-password")
+            .lean(); // lean return common JS object as simply doing user.role just does it in memory no in the response
 
-    return res.status(404).send({ msg: "User not found ❌" });
-    // console.log(req.user);
-    // return res.status(200).json({ user: req.user });
-}
+        if (user) {
+            user.role = "doctor";
+            return res.status(200).json({ user });
+        }
+
+        user = await Patient.findById(req.user.id)
+            .select("-password")
+            .lean();
+
+        if (user) {
+            user.role = "patient";
+            return res.status(200).json({ user });
+        }
+
+        user = await Shopkeeper.findById(req.user.id)
+            .select("-password")
+            .lean();
+
+        if (user) {
+            user.role = "shopkeeper";
+            return res.status(200).json({ user });
+        }
+
+        return res.status(404).json({ msg: "User not found ❌" });
+
+    } catch (error) {
+        console.error("getMe error:", error);
+        return res.status(500).json({ msg: "Server error ❌" });
+    }
+};
 
 exports.logout = async (req, res) => {
     res.clearCookie("token", {

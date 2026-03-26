@@ -109,7 +109,7 @@ const Navbar = () => {
 
             {/* Professional Letter Avatar (replaces Register button) */}
             <div onClick={() => {
-              navigate('/medi-list')
+              navigate('/profile')
             }} className="w-11 h-11 rounded-full cursor-pointer bg-blue-600 flex items-center justify-center text-white font-semibold text-base lg:text-lg shadow-md">
               {user?.name?.charAt(0).toUpperCase()}
             </div>

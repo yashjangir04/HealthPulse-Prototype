@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema({
-    appointmentRoomID: {
+    roomID: {
         type: String,
         required: true
     },
@@ -14,8 +14,8 @@ const appointmentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["upcoming", "completed"],
-        default: "upcoming"
+        enum: ["upcoming", "ingoing" , "completed" , "cancelled"],
+        default: "ingoing"
     },
     doctorID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,11 +27,9 @@ const appointmentSchema = new mongoose.Schema({
     },
     notes: {
         type: String,
-        required: true
     },
     prescribedMedicine: [{
         type: String,
-        required: true
     }],
     isActive: {
         type: Boolean,
