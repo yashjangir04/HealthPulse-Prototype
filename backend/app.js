@@ -11,9 +11,9 @@ const { createServer } = require("http") ;
 const db = require("./config/db-config") ;
 const authRouter = require("./routes/authRouter") ;
 const communicationRouter = require("./routes/communicationRouter") ;
+const appointmentRouter = require("./routes/appointmentRouter") ;
 
 const server = createServer(app) ;
-const authMiddleware = require("./middlewares/authMiddleware") ;
 const socketHandler = require("./socket/socketHandler") ;
 
 const io = new Server(server , {
@@ -41,6 +41,7 @@ socketHandler(io) ;
 // Main Routes
 app.use("/api/auth" , authRouter) ;
 app.use("/api/communicate" , communicationRouter) ;
+app.use("/api/appointments" , appointmentRouter) ;
 
 // Default Routes
 app.get("/health" , (req , res) => {

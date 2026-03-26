@@ -16,6 +16,7 @@ import StepForm from "./pages/StepForm";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 import Lobby from "./pages/Lobby";
+import Appointments from "./pages/Appointments";
 
 function App() {
   return (
@@ -58,6 +59,19 @@ function App() {
               isFullHeighted={true}
             >
               <MeetingRoom />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/appointments"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Appointments />
             </MainLayout>
           }
         />

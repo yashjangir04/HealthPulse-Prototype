@@ -7,16 +7,17 @@ import { GrAttachment } from "react-icons/gr";
 import { IoMdSend } from "react-icons/io";
 import { IoDocumentTextOutline, IoWarningOutline } from "react-icons/io5";
 import { TbPill } from "react-icons/tb";
-import Sidebar from "../components/Sidebar";
 import { useAuth } from "../auth/AuthContext";
+import { endAppointment } from "../api/appointment";
+import { useNavigate } from "react-router-dom";
 
 const MeetingRoom = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { roomID } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate() ;
 
-  // FAKE DATA STATE: Replace this with your API call later
   const [patientData, setPatientData] = useState({
     name: "Viruska Sharma",
     profilePic: "/sundar-kanya.png",
@@ -58,21 +59,35 @@ const MeetingRoom = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleEndMeeting = async () => {
+    if(user.role === "doctor") {
+      await endAppointment({
+        meetingID : roomID
+      }) ;
+    }
+    navigate("/connect") ;
+  };
+
   return (
     <div
-      // RESPONSIVE FIX: Stack columns on mobile (grid-cols-1), expand on desktop (lg:grid-cols-[...])
-      // Also changed h-screen to min-h-screen so it can scroll naturally on mobile
       className={`w-full min-h-screen lg:h-screen relative grid grid-cols-1 ${
         user.role === "doctor" ? "lg:grid-cols-[1.8fr_1fr]" : ""
       } gap-4 bg-white p-2 lg:p-4`}
     >
       <div className="meetingLeftBox flex flex-col lg:grid lg:grid-rows-2 gap-4 h-full">
-        {/* RESPONSIVE FIX: Set a minimum height for the video on mobile */}
-        <div className="VideoChat w-full min-h-[40vh] lg:min-h-0 overflow-hidden rounded-3xl bg-secondary/50">
+        <div className="VideoChat relative w-full min-h-[40vh] lg:min-h-0 overflow-hidden rounded-3xl bg-secondary/50">
+          <button 
+            className="absolute top-4 right-4 z-50 bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full poppins-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer border border-red-400/50 backdrop-blur-sm"
+
+            onClick ={handleEndMeeting}
+          >
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            End Meeting
+          </button>
+          
           <ZegoCloud />
         </div>
         
-        {/* RESPONSIVE FIX: 1 column on mobile, 2 columns on desktop (lg:grid-cols-2) */}
         <div className="NotesAndPrescriptionPanel bg-secondary/50 grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 rounded-3xl">
           <div className="notes flex flex-col gap-2 h-full">
             <div className="flex flex-col bg-white rounded-xl p-3 grow">
@@ -139,7 +154,6 @@ const MeetingRoom = () => {
       
       {user.role === "doctor" && (
         <div className="meetingRightBox bg-secondary/50 p-5 rounded-3xl flex flex-col gap-4 overflow-y-auto max-h-screen">
-          {/* Patient Info */}
           <div className="flex flex-col gap-2 bg-white rounded-3xl px-4 py-4">
             <div className="flex items-center gap-2 text-gray-500 font-bold text-lg poppins-semibold ml-1">
               Patient Info
@@ -176,7 +190,6 @@ const MeetingRoom = () => {
             </div>
           </div>
 
-          {/* Medical Summary */}
           <div className="commonClassMed flex gap-10 flex-col bg-white rounded-3xl p-4">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-gray-500 font-bold text-lg poppins-semibold ml-1">
@@ -189,7 +202,6 @@ const MeetingRoom = () => {
                   <p>{patientData.medicalSummary.diagnosis}</p>
                 </div>
                 
-                {/* Conditionally render alert if it exists */}
                 {patientData.medicalSummary.alert.hasAlert && (
                   <div className="bg-[#ff4d4f] rounded-xl p-3 flex items-start gap-3 text-white">
                     <IoWarningOutline className="text-4xl shrink-0 mt-0.5" />
@@ -206,14 +218,12 @@ const MeetingRoom = () => {
               </div>
             </div>
 
-            {/* Current Medications */}
             <div className="flex flex-col gap-2 grow">
               <div className="flex items-center gap-2 text-gray-500 font-bold text-lg poppins-semibold ml-1">
                 <GiMedicinePills className="text-[#4285f4] text-xl" />
                 Current Medications
               </div>
               <div className="bg-white rounded-2xl p-4 flex flex-col gap-3 shadow-sm grow inter-regular text-sm text-gray-700">
-                {/* Dynamically map over medications array */}
                 {patientData.currentMedications.map((med, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <TbPill className="text-[#8ab4f8] text-lg shrink-0" />{" "}
@@ -223,7 +233,6 @@ const MeetingRoom = () => {
               </div>
             </div>
 
-            {/* Emergency Alert Button */}
             <button className="w-full bg-[#ff4d4f] hover:bg-red-600 transition-colors text-white py-3.5 rounded-xl flex justify-center items-center gap-2 poppins-semibold shadow-md mt-1 cursor-pointer duration-300">
               <IoWarningOutline className="text-xl" />
               Send Emergency Alert

@@ -46,7 +46,7 @@ const SignInForm = () => {
       Login(res.data.user);
 
       console.log("Login successful, user state updated.");
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       setErrorMessage(error.message);
     } finally {

@@ -16,7 +16,6 @@ const socketHandler = (io) => {
         
         socket.on("enter-patient", (data) => {  
             addPatient(data) ;
-            console.log(data);
             console.log(`User ${data._id} entered the patient room ✅`);
         })
 
