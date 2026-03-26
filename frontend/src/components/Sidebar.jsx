@@ -50,7 +50,7 @@ const Sidebar = ({
     { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
     { icon: <Users size={20} />, label: "Contacts", path: "/contact" },
     { icon: <Bell size={20} />, label: "Reminder", path: "/medi-list" },
-    { icon: <UserRound size={20} />, label: "Connect", path: "/meeting/room/yashvi" },
+    { icon: <UserRound size={20} />, label: "Connect", path: "/connect" },
   ];
 
   return (

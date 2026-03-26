@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const me = await getMe();
-        console.log("ME RESPONSE:", me);
+        console.log("ME RESPONSE:", me.data);
         
 
         if (me?.data?.user) {

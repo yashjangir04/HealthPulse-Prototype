@@ -7,7 +7,11 @@ import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/contact";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
+<<<<<<< Updated upstream
 import Profile from "./pages/profile";
+=======
+import Connect from "./pages/Connect";
+>>>>>>> Stashed changes
 
 import SignInForm from "./pages/SignInForm";
 import SignUpForm from "./pages/SignUpForm";
@@ -52,10 +56,10 @@ function App() {
         ></Route>
 
         <Route
-          path="/meeting/room/:roomID"
+          path="/connect"
           element={
             <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
-              <MeetingRoom />
+              <Connect />
             </MainLayout>
           }
         ></Route>

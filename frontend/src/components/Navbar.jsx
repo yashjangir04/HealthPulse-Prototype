@@ -4,8 +4,10 @@ import { Link, useLocation } from "react-router-dom";
 import { Bell, User, LogOut, LogIn } from "lucide-react";
 import logo from "../assets/logo.svg";
 import plusIcon from "../assets/plus.svg";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { user, isLoggedIn, logout } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -32,28 +34,36 @@ const Navbar = () => {
         </div>
       </div>
 
-      <button 
-        onClick={() => setIsMenuOpen(!isMenuOpen)} 
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="lg:hidden p-2 text-slate-600 focus:outline-none"
       >
         <div className="space-y-1.5">
-          <span className={`block w-8 h-0.5 bg-slate-800 transition-all ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-          <span className={`block w-8 h-0.5 bg-slate-800 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
-          <span className={`block w-8 h-0.5 bg-slate-800 transition-all ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          <span
+            className={`block w-8 h-0.5 bg-slate-800 transition-all ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`}
+          ></span>
+          <span
+            className={`block w-8 h-0.5 bg-slate-800 ${isMenuOpen ? "opacity-0" : ""}`}
+          ></span>
+          <span
+            className={`block w-8 h-0.5 bg-slate-800 transition-all ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`}
+          ></span>
         </div>
       </button>
 
-      <div className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row absolute lg:static top-20 left-0 w-full lg:w-auto bg-white/95 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none p-8 lg:p-0 border-b lg:border-none shadow-lg lg:shadow-none items-center space-y-8 lg:space-y-0 lg:space-x-12`}>
+      <div
+        className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row absolute lg:static top-20 left-0 w-full lg:w-auto bg-white/95 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none p-8 lg:p-0 border-b lg:border-none shadow-lg lg:shadow-none items-center space-y-8 lg:space-y-0 lg:space-x-12`}
+      >
         <ul className="flex flex-col lg:flex-row items-center space-y-6 lg:space-y-0 lg:space-x-10 text-[18px] font-bold text-slate-500">
           <li className="relative group">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className={`transition-colors cursor-pointer ${
-              location.pathname === "/"
+                location.pathname === "/"
                   ? "text-blue-600"
                   : "text-slate-500 hover:text-blue-600"
-    }`}
-              >
+              }`}
+            >
               Home
             </Link>
             <span
@@ -68,7 +78,7 @@ const Navbar = () => {
             <Link
               to="/about"
               className={`transition-colors cursor-pointer ${
-              location.pathname === "/about"
+                location.pathname === "/about"
                   ? "text-blue-600"
                   : "text-slate-500 hover:text-blue-600"
               }`}
@@ -83,12 +93,11 @@ const Navbar = () => {
                   : "w-0 group-hover:w-full"
               }`}
             ></span>
-            
           </li>
         </ul>
 
         {isLoggedIn ? (
-<>
+          <>
             {/* Logout Text (replaces Login) */}
             <button
               onClick={logout}
@@ -99,12 +108,16 @@ const Navbar = () => {
             </button>
 
             {/* Professional Letter Avatar (replaces Register button) */}
-            <div className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-base lg:text-lg shadow-md">
+            <div onClick={() => {
+              navigate('/medi-list')
+            }} className="w-11 h-11 rounded-full cursor-pointer bg-blue-600 flex items-center justify-center text-white font-semibold text-base lg:text-lg shadow-md">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
           </>
         ) : (
-          <div className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row items-center gap-6 lg:gap-10 text-[18px] font-bold text-slate-500`}>
+          <div
+            className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row items-center gap-6 lg:gap-10 text-[18px] font-bold text-slate-500`}
+          >
             <div className="relative group">
               <Link
                 to="/account/login"
