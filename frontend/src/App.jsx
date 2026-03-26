@@ -166,7 +166,7 @@ function App() {
               showSidebar={false}
               isFullHeighted={true}
             >
-              <SignUpForm />
+              <StepForm />
             </MainLayout>
           }
         ></Route>
