@@ -7,17 +7,15 @@ import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/contact";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
-<<<<<<< Updated upstream
 import Profile from "./pages/profile";
-=======
 import Connect from "./pages/Connect";
->>>>>>> Stashed changes
 
 import SignInForm from "./pages/SignInForm";
 import SignUpForm from "./pages/SignUpForm";
 import StepForm from "./pages/StepForm";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+
 function App() {
   return (
     <BrowserRouter>
@@ -86,13 +84,13 @@ function App() {
           path="/profile"
           element={
             <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
-              <Contact />
+              <Profile />
             </MainLayout>
           }
         ></Route>
 
             <Route
-          path="/register"
+          path="/account/register"
           element={
             <MainLayout  showNavbar={false} showSidebar={false} isFullHeighted={true}>
               <SignUpForm/>

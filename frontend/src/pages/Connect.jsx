@@ -121,9 +121,9 @@ const Connect = () => {
         </form>
 
         <div className="relative flex items-center py-7">
-          <div className="flex-grow border-t border-gray-100"></div>
-          <span className="flex-shrink-0 mx-4 text-gray-400 inter-regular text-sm">OR</span>
-          <div className="flex-grow border-t border-gray-100"></div>
+          <div className="grow border-t border-gray-100"></div>
+          <span className="shrink-0 mx-4 text-gray-400 inter-regular text-sm">OR</span>
+          <div className="grow border-t border-gray-100"></div>
         </div>
 
         <div className="text-center">

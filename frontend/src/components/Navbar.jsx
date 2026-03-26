@@ -13,7 +13,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
-    <nav className="fixed top-0 w-full h-20 md:h-24 flex items-center justify-between px-6 md:px-12 bg-white/60 backdrop-blur-xl z-[100] border-b border-white/20 shadow-sm">
+    <nav className="fixed top-0 w-full h-20 md:h-24 flex items-center justify-between px-6 md:px-12 bg-white/60 backdrop-blur-xl z-100 border-b border-white/20 shadow-sm">
       <div className="flex items-center gap-4 group cursor-pointer">
         <div className="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center">
           <img
@@ -67,7 +67,7 @@ const Navbar = () => {
               Home
             </Link>
             <span
-              className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-[3px] bg-blue-600 rounded-full transition-all duration-300 ${
+              className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-0.75 bg-blue-600 rounded-full transition-all duration-300 ${
                 location.pathname === "/" ? "w-full" : "w-0 group-hover:w-full"
               }`}
             ></span>
@@ -104,7 +104,7 @@ const Navbar = () => {
               className="relative group text-red-400 cursor-pointer hover:text-red-500 transition-colors poppins-bold text-lg"
             >
               Logout
-              <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-[3px] bg-red-500 rounded-full transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0.75 bg-red-500 rounded-full transition-all duration-300 group-hover:w-full"></span>
             </button>
 
             {/* Professional Letter Avatar (replaces Register button) */}
@@ -126,7 +126,7 @@ const Navbar = () => {
                 Login
               </Link>
               <span
-                className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-[3px] bg-blue-600 rounded-full transition-all duration-300 ${
+                className={`absolute left-1/2 -translate-x-1/2 -bottom-1 h-0.75 bg-blue-600 rounded-full transition-all duration-300 ${
                   location.pathname === "/account/login"
                     ? "w-full"
                     : "w-0 group-hover:w-full"
@@ -135,7 +135,7 @@ const Navbar = () => {
             </div>
 
             <Link
-              to="/account/create"
+              to="/account/register"
               className="bg-[#3F87F7] text-white px-6 py-2 lg:px-10 lg:py-3 rounded-2xl font-black text-lg shadow-[0_10px_30px_-10px_rgba(29,136,254,1)] hover:scale-105 active:scale-95 transition-all"
             >
               Register
