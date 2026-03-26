@@ -7,11 +7,16 @@ import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/contact";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./pages/profile";
+import Connect from "./pages/Connect";
+
 import SignInForm from "./pages/SignInForm";
 import SignUpForm from "./pages/SignUpForm";
 import StepForm from "./pages/StepForm";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+import Lobby from "./pages/Lobby";
+
 function App() {
   return (
     <BrowserRouter>
@@ -19,7 +24,11 @@ function App() {
         <Route
           path="/"
           element={
-            <MainLayout showNavbar={true} showSidebar={false} isFullHeighted={false}>
+            <MainLayout
+              showNavbar={true}
+              showSidebar={false}
+              isFullHeighted={false}
+            >
               <Landing />
             </MainLayout>
           }
@@ -28,10 +37,40 @@ function App() {
         <Route
           path="/about"
           element={
-            <MainLayout showNavbar={true} showSidebar={false} isFullHeighted={false}>
+            <MainLayout
+              showNavbar={true}
+              showSidebar={false}
+              isFullHeighted={false}
+            >
               <div className=".box w-full h-screen mt-24 grid place-items-center">
                 <h1 className="poppins-bold text-3xl">About</h1>
               </div>
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/meeting/:roomID"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <MeetingRoom />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/lobby/:speciality"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Lobby />
             </MainLayout>
           }
         />
@@ -42,7 +81,11 @@ function App() {
           path="/medi-list"
           element={
             <ProtectedRoute>
-              <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
+              <MainLayout
+                showNavbar={false}
+                showSidebar={true}
+                isFullHeighted={true}
+              >
                 <MediList />
               </MainLayout>
             </ProtectedRoute>
@@ -50,10 +93,14 @@ function App() {
         ></Route>
 
         <Route
-          path="/meeting/room/:roomID"
+          path="/connect"
           element={
-            <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
-              <MeetingRoom />
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Connect />
             </MainLayout>
           }
         ></Route>
@@ -61,59 +108,100 @@ function App() {
         <Route
           path="/contact"
           element={
-            <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
               <Contact />
             </MainLayout>
           }
         ></Route>
-       
+
         <Route
           path="/medicines"
           element={
-            <MainLayout showNavbar={true} showSidebar={true} isFullHeighted={false}>
-              <MedicineDelivery/>
+            <MainLayout
+              showNavbar={true}
+              showSidebar={true}
+              isFullHeighted={false}
+            >
+              <MedicineDelivery />
             </MainLayout>
           }
-        ></Route> 
-            
-            <Route
-          path="/register"
+        ></Route>
+
+        <Route
+          path="/profile"
           element={
-            <MainLayout  showNavbar={false} showSidebar={false} isFullHeighted={true}>
-              <SignUpForm/>
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Profile />
             </MainLayout>
           }
-        ></Route> 
-            
-            <Route
+        ></Route>
+
+        <Route
+          path="/account/register"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <SignUpForm />
+            </MainLayout>
+          }
+        ></Route>
+
+        <Route
           path="/login"
           element={
-            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
-              <SignInForm/>
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <SignInForm />
             </MainLayout>
           }
-        ></Route> 
-             <Route
+        ></Route>
+        <Route
           path="/stepform"
           element={
-            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
-              <StepForm/>
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <StepForm />
             </MainLayout>
           }
         ></Route>
-                  <Route
+        <Route
           path="/stepformPatient"
           element={
-            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
-              <StepFormPatient/>
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <StepFormPatient />
             </MainLayout>
           }
         ></Route>
-                          <Route
+        <Route
           path="/stepformShopkeeper"
           element={
-            <MainLayout showNavbar={false} showSidebar={false} isFullHeighted={true}>
-              <StepFormShopkeeper/>
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <StepFormShopkeeper />
             </MainLayout>
           }
         ></Route>
