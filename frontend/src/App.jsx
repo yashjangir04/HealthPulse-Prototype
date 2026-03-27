@@ -16,6 +16,7 @@ import StepForm from "./pages/StepForm";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 import Lobby from "./pages/Lobby";
+import Appointments from "./pages/Appointments";
 
 function App() {
   return (
@@ -58,6 +59,19 @@ function App() {
               isFullHeighted={true}
             >
               <MeetingRoom />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/appointments"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Appointments />
             </MainLayout>
           }
         />
@@ -108,37 +122,25 @@ function App() {
         <Route
           path="/contact"
           element={
-            <MainLayout
-              showNavbar={false}
-              showSidebar={true}
-              isFullHeighted={true}
-            >
+            <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
               <Contact />
             </MainLayout>
           }
         ></Route>
-
+       
         <Route
           path="/medicines"
           element={
-            <MainLayout
-              showNavbar={true}
-              showSidebar={true}
-              isFullHeighted={false}
-            >
-              <MedicineDelivery />
+            <MainLayout showNavbar={true} showSidebar={true} isFullHeighted={false}>
+              <MedicineDelivery/>
             </MainLayout>
           }
-        ></Route>
-
+        ></Route> 
+        
         <Route
           path="/profile"
           element={
-            <MainLayout
-              showNavbar={false}
-              showSidebar={true}
-              isFullHeighted={true}
-            >
+            <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
               <Profile />
             </MainLayout>
           }
@@ -152,7 +154,7 @@ function App() {
               showSidebar={false}
               isFullHeighted={true}
             >
-              <SignUpForm />
+              <StepForm />
             </MainLayout>
           }
         ></Route>

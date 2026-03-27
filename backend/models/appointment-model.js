@@ -11,11 +11,12 @@ const appointmentSchema = new mongoose.Schema({
     },
     endTime: {
         type: Date,
+        default: null
     },
     status: {
         type: String,
-        enum: ["upcoming", "ingoing" , "completed" , "cancelled"],
-        default: "ingoing"
+        enum: ["upcoming", "ongoing" , "completed" , "cancelled"],
+        default: "ongoing"
     },
     doctorID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,6 +35,11 @@ const appointmentSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    type: {
+        type: String,
+        enum: ["general" , "scheduled"],
+        default: "general"
     }
 }, { timestamps: true });
 
