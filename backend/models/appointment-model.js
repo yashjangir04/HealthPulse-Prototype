@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema({
-    appointmentRoomID: {
+    roomID: {
         type: String,
         required: true
     },
@@ -11,11 +11,12 @@ const appointmentSchema = new mongoose.Schema({
     },
     endTime: {
         type: Date,
+        default: null
     },
     status: {
         type: String,
-        enum: ["upcoming", "completed"],
-        default: "upcoming"
+        enum: ["upcoming", "ongoing" , "completed" , "cancelled"],
+        default: "ongoing"
     },
     doctorID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,15 +28,18 @@ const appointmentSchema = new mongoose.Schema({
     },
     notes: {
         type: String,
-        required: true
     },
     prescribedMedicine: [{
         type: String,
-        required: true
     }],
     isActive: {
         type: Boolean,
         default: true
+    },
+    type: {
+        type: String,
+        enum: ["general" , "scheduled"],
+        default: "general"
     }
 }, { timestamps: true });
 

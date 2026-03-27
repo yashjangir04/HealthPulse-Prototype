@@ -5,6 +5,7 @@ import ShopAccount from "../components/steps/ShopAccount";
 import ShopAddress from "../components/steps/ShopAddress";
 import ShopDetails from "../components/steps/ShopDetails";
 import ShopFinal from "../components/steps/ShopFinal";
+import {signupShopkeeper} from "../api/auth";
 const StepFormShopkeeper = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -63,20 +64,19 @@ const StepFormShopkeeper = () => {
 
   const handleSubmit = async () => {
     try {
-
-      const res = await fetch("/api/Shopkeeper/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-      console.log("Shopkeeper registered:", data);
-
+  
+      const response = await signupShopkeeper(formData);
+  
+      console.log("Shopkeeper registered:", response.data);
+  
+      alert("Registration successful");
+  
     } catch (error) {
-      console.log("Error:", error);
+  
+      console.log("Error:", error.response?.data || error.message);
+  
+      alert("Registration failed");
+  
     }
   };
 

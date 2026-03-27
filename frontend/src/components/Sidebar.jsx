@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import {
@@ -12,6 +12,8 @@ import {
   ChevronLeft,
   ChevronRight,
   LogIn,
+  Calendar,
+  ShoppingBag, // Imported for Shopkeeper's Orders
 } from "lucide-react";
 
 const Sidebar = ({
@@ -33,7 +35,6 @@ const Sidebar = ({
       : parts[0][0].toUpperCase();
   };
 
-  //Add backend logout API call here
   const handleLogout = async () => {
     try {
       await logout(); 
@@ -43,15 +44,50 @@ const Sidebar = ({
     }
   };
 
+  // --- ROLE BASED MENU LOGIC ---
+  const getMenuItems = () => {
+    // 1. Define all possible menu items
+    const allItems = {
+      profile: { icon: <User size={20} />, label: "Profile", path: "/profile" },
+      aiHelp: { icon: <Sparkles size={20} />, label: "AI Help", path: "/ai-help" },
+      reports: { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
+      contacts: { icon: <Users size={20} />, label: "Contacts", path: "/contact" },
+      reminder: { icon: <Bell size={20} />, label: "Reminder", path: "/medi-list" },
+      appointments: { icon: <Calendar size={20} />, label: "Appointments", path: "/appointments" },
+      connect: { icon: <UserRound size={20} />, label: "Connect", path: "/connect" },
+      orders: { icon: <ShoppingBag size={20} />, label: "Orders", path: "/orders" }, // New for Shopkeeper
+    };
 
-  const menuItems = [
-    { icon: <User size={20} />, label: "Profile", path: "/profile" },
-    { icon: <Sparkles size={20} />, label: "AI Help", path: "/ai-help" },
-    { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
-    { icon: <Users size={20} />, label: "Contacts", path: "/contact" },
-    { icon: <Bell size={20} />, label: "Reminder", path: "/medi-list" },
-    { icon: <UserRound size={20} />, label: "Connect", path: "/meeting/room/yashvi" },
-  ];
+    // 2. Return specific arrays based on the user's role
+    switch (user?.role) {
+      case "doctor":
+        return [
+          allItems.profile,
+          allItems.appointments,
+          allItems.connect,
+        ];
+      case "shopkeeper":
+        return [
+          allItems.profile,
+          allItems.orders,
+        ];
+      case "patient":
+      default:
+        // Default to showing all patient items
+        return [
+          allItems.profile,
+          allItems.aiHelp,
+          allItems.reports,
+          allItems.contacts,
+          allItems.reminder,
+          allItems.appointments,
+          allItems.connect,
+        ];
+    }
+  };
+
+  // Generate the menu array for the current user
+  const menuItems = getMenuItems();
 
   return (
     <>
@@ -80,10 +116,9 @@ const Sidebar = ({
                           ? "lg:top-0 lg:h-screen lg:pt-6"
                           : "lg:top-24 lg:h-[calc(100vh-6rem)]"
                       }
-  `               }
+        `}
       >
 
-        
         {/* Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -103,7 +138,6 @@ const Sidebar = ({
               key={item.path}
               to={item.path}
               onClick={() => setIsOpen(false)}
-
               className={({ isActive }) => `
                 flex items-center gap-4 px-3 py-2.5 rounded-2xl cursor-pointer transition-all duration-300 group
                 ${isActive 
