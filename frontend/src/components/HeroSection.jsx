@@ -102,7 +102,7 @@ export default function HeroSection() {
 <directionalLight position={[2, 2, 2]} />
 
 <Suspense fallback={null}>
-  <Heart scale={0.015} />
+  <Heart scale={0.02} />
 </Suspense>
 
 <OrbitControls makeDefault enableZoom={false} />
