@@ -89,7 +89,6 @@ const Appointments = () => {
       return timeA - timeB;
     });
 
-  // Dynamic colors for the pill badges and boxes
   const getStatusStyles = (status) => {
     switch (status) {
       case "upcoming": return "bg-blue-100 text-blue-700 border-blue-200";
@@ -154,12 +153,18 @@ const Appointments = () => {
     setModalMode("cancel");
     setIsModalOpen(true);
   };
+  
+  const handleOpenDetails = (appointment) => {
+    setSelectedAppointment(appointment);
+    setModalMode("details");
+    setIsModalOpen(true);
+  };
 
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     let combinedDateTimeISO = null;
 
-    if (modalMode !== "cancel" && newDate && newTime) {
+    if (modalMode !== "cancel" && modalMode !== "details" && newDate && newTime) {
       const combinedString = `${newDate}T${newTime}:00`;
       const dateTimeObject = new Date(combinedString);
       combinedDateTimeISO = dateTimeObject.toISOString();
@@ -296,16 +301,31 @@ const Appointments = () => {
                       </button>
                     )}
 
-                  {isDoctor && appointment.displayStatus === "completed" && (
-                    <button
-                      onClick={() => handleOpenFollowUp(appointment)}
-                      className="px-4 py-2 text-sm inter-medium rounded-full border border-blue-200 text-blue-600 cursor-pointer hover:bg-blue-50 transition-colors flex items-center gap-1.5"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Schedule Follow-up
-                    </button>
+                  {/* --- NEW/UPDATED COMPLETED BUTTONS --- */}
+                  {appointment.displayStatus === "completed" && (
+                    <>
+                      <button
+                        onClick={() => handleOpenDetails(appointment)}
+                        className="px-4 py-2 text-sm inter-medium rounded-full border border-gray-200 text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-1.5"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        View Details
+                      </button>
+
+                      {isDoctor && (
+                        <button
+                          onClick={() => handleOpenFollowUp(appointment)}
+                          className="px-4 py-2 text-sm inter-medium rounded-full border border-blue-200 text-blue-600 cursor-pointer hover:bg-blue-50 transition-colors flex items-center gap-1.5"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Schedule Follow-up
+                        </button>
+                      )}
+                    </>
                   )}
 
                   {appointment.displayStatus === "upcoming" && (
@@ -334,75 +354,137 @@ const Appointments = () => {
                 {modalMode === "reschedule" && "Reschedule Appointment"}
                 {modalMode === "followup" && "Schedule Follow-up"}
                 {modalMode === "cancel" && "Cancel Appointment"}
+                {modalMode === "details" && "Appointment Details"}
               </h2>
-              <p className="inter-regular text-sm text-gray-500 mt-1">
-                {modalMode === "reschedule" && "Updating time for "}
-                {modalMode === "followup" && "Booking new visit for "}
-                {modalMode === "cancel" && "Are you sure you want to cancel the visit with "}
-                <span className="font-semibold text-gray-700">
-                  {isDoctor
-                    ? selectedAppointment?.patientID?.name
-                    : selectedAppointment?.doctorID?.name}
-                </span>
-                ?
-              </p>
+              {modalMode !== "details" && (
+                <p className="inter-regular text-sm text-gray-500 mt-1">
+                  {modalMode === "reschedule" && "Updating time for "}
+                  {modalMode === "followup" && "Booking new visit for "}
+                  {modalMode === "cancel" && "Are you sure you want to cancel the visit with "}
+                  <span className="font-semibold text-gray-700">
+                    {isDoctor
+                      ? selectedAppointment?.patientID?.name
+                      : selectedAppointment?.doctorID?.name}
+                  </span>
+                  ?
+                </p>
+              )}
             </div>
 
-            <form onSubmit={handleModalSubmit} className="p-6 space-y-5">
-              {modalMode !== "cancel" && (
-                <>
-                  <div>
-                    <label className="inter-medium block text-sm text-gray-700 mb-2">Select Date</label>
-                    <input
-                      type="date"
-                      required
-                      value={newDate}
-                      onChange={(e) => setNewDate(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
-                    />
+            {/* --- NEW DETAILS VIEW CONDITIONAL RENDER --- */}
+            {modalMode === "details" ? (
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto scrollbar-hide">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span className="text-xs text-gray-500 inter-medium block mb-1">Date</span>
+                    <span className="text-sm poppins-semibold text-gray-800">
+                      {new Date(selectedAppointment.startTime).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                    </span>
                   </div>
-
-                  <div>
-                    <label className="inter-medium block text-sm text-gray-700 mb-2">Select Time</label>
-                    <input
-                      type="time"
-                      required
-                      value={newTime}
-                      onChange={(e) => setNewTime(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
-                    />
+                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span className="text-xs text-gray-500 inter-medium block mb-1">Time</span>
+                    <span className="text-sm poppins-semibold text-gray-800">
+                      {formatTimeIST(selectedAppointment.startTime)} 
+                      {selectedAppointment.endTime && ` - ${formatTimeIST(selectedAppointment.endTime)}`}
+                    </span>
                   </div>
-                </>
-              )}
-
-              {modalMode === "cancel" && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-xl inter-medium text-sm border border-red-100">
-                  This action cannot be undone. You will need to book a new appointment if you change your mind.
                 </div>
-              )}
 
-              <div className="flex gap-3 pt-4">
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                  <span className="text-xs text-blue-500 inter-medium block mb-1">
+                    {isDoctor ? "Patient Name" : "Doctor Name"}
+                  </span>
+                  <span className="text-base poppins-semibold text-blue-900">
+                    {isDoctor ? selectedAppointment?.patientID?.name : selectedAppointment?.doctorID?.name}
+                  </span>
+                </div>
+
+                {selectedAppointment?.notes && (
+                  <div>
+                    <h4 className="inter-medium text-sm text-gray-700 mb-2">Doctor's Notes</h4>
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 text-sm text-gray-600 inter-regular whitespace-pre-wrap">
+                      {selectedAppointment.notes}
+                    </div>
+                  </div>
+                )}
+
+                {selectedAppointment?.prescribedMedicine?.length > 0 && (
+                  <div>
+                    <h4 className="inter-medium text-sm text-gray-700 mb-2">Prescribed Medicines</h4>
+                    <ul className="list-disc list-inside space-y-1 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                      {selectedAppointment.prescribedMedicine.map((med, idx) => (
+                        <li key={idx} className="text-sm text-gray-600 inter-regular capitalize">{med}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="w-full py-3 px-4 rounded-full poppins-semibold text-gray-600 bg-white border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
+                  className="w-full mt-2 py-3 px-4 rounded-full poppins-semibold text-gray-600 bg-white border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
                 >
-                  {modalMode === "cancel" ? "Keep Appointment" : "Cancel"}
-                </button>
-                <button
-                  type="submit"
-                  className={`w-full py-3 px-4 rounded-full cursor-pointer poppins-semibold text-white shadow-md transition-all ${
-                    modalMode === "cancel"
-                      ? "bg-red-500 hover:bg-red-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                >
-                  {modalMode === "reschedule" && "Confirm Changes"}
-                  {modalMode === "followup" && "Book Follow-up"}
-                  {modalMode === "cancel" && "Yes, Cancel It"}
+                  Close
                 </button>
               </div>
-            </form>
+            ) : (
+              /* EXISTING MODAL FORM */
+              <form onSubmit={handleModalSubmit} className="p-6 space-y-5">
+                {modalMode !== "cancel" && (
+                  <>
+                    <div>
+                      <label className="inter-medium block text-sm text-gray-700 mb-2">Select Date</label>
+                      <input
+                        type="date"
+                        required
+                        value={newDate}
+                        onChange={(e) => setNewDate(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="inter-medium block text-sm text-gray-700 mb-2">Select Time</label>
+                      <input
+                        type="time"
+                        required
+                        value={newTime}
+                        onChange={(e) => setNewTime(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {modalMode === "cancel" && (
+                  <div className="bg-red-50 text-red-600 p-4 rounded-xl inter-medium text-sm border border-red-100">
+                    This action cannot be undone. You will need to book a new appointment if you change your mind.
+                  </div>
+                )}
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="w-full py-3 px-4 rounded-full poppins-semibold text-gray-600 bg-white border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
+                  >
+                    {modalMode === "cancel" ? "Keep Appointment" : "Cancel"}
+                  </button>
+                  <button
+                    type="submit"
+                    className={`w-full py-3 px-4 rounded-full cursor-pointer poppins-semibold text-white shadow-md transition-all ${
+                      modalMode === "cancel"
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    }`}
+                  >
+                    {modalMode === "reschedule" && "Confirm Changes"}
+                    {modalMode === "followup" && "Book Follow-up"}
+                    {modalMode === "cancel" && "Yes, Cancel It"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
