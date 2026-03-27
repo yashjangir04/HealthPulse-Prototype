@@ -56,7 +56,7 @@ function App() {
           element={
             <MainLayout
               showNavbar={false}
-              showSidebar={true}
+              showSidebar={false}
               isFullHeighted={true}
             >
               <MeetingRoom />
