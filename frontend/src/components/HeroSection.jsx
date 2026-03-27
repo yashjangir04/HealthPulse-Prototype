@@ -3,7 +3,12 @@ import health from "../assets/Group 21.png";
 import arrow from "../assets/image 85.png";
 import vector1 from "../assets/blob1.png";
 import vector2 from "../assets/blob2.png";
+import { Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Environment, OrbitControls } from "@react-three/drei";
 
+import Heart from "../components/Heart"; 
+import { AmbientLight } from "three";
 const words = ["trusted", "accessible", "empower", "digital"];
 
 export default function HeroSection() {
@@ -83,26 +88,27 @@ export default function HeroSection() {
         <div className="relative w-full lg:w-1/2 flex flex-col items-center">
           <div className="hb1 h-10 w-40 bg-[#dfedff] absolute top-2 left-0 z-100">
           </div>
-          <div className="hb1 h-12 w-full bg-primary absolute bottom-0 left-0 z-100 rounded-4xl">
-          </div>
+         
           <img
             src={vector1}
             alt="background blob"
             className="fixed -z-10 top-[150px] right-[-40px] w-[220px] sm:w-[280px] lg:w-[350px] opacity-100"
           />
           
-          <div className="sketchfab-embed-wrapper w-full h-[350px] md:h-[300px] lg:h-[550px] z-10">
-            <iframe 
-              title="Blue Heart" 
-              frameBorder="0" 
-              allowFullScreen 
-              mozAllowFullScreen="true" 
-              webkitAllowFullScreen="true" 
-              allow="autoplay; fullscreen; xr-spatial-tracking" 
-              src="https://sketchfab.com/models/34a8968194a34348b30779e229887e66/embed?autospin=1&autostart=1&camera=0&preload=1&transparent=1&ui_hint=0"
-              className="w-full h-full rounded-2xl"
-            ></iframe>
-          </div>
+          <div className="w-full h-[350px] md:h-[300px] lg:h-[550px]">
+          <Canvas camera={{ position: [0, 0, 0], fov: 50 }}>
+
+<ambientLight intensity={1.5} />
+<directionalLight position={[2, 2, 2]} />
+
+<Suspense fallback={null}>
+  <Heart scale={0.015} />
+</Suspense>
+
+<OrbitControls makeDefault enableZoom={false} />
+<Environment preset='sunset'/>
+</Canvas>
+</div>
         </div>
       </div>
     </div>
