@@ -17,6 +17,7 @@ import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 import Lobby from "./pages/Lobby";
 import Appointments from "./pages/Appointments";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -154,7 +155,7 @@ function App() {
               showSidebar={false}
               isFullHeighted={true}
             >
-              <StepForm />
+              <Signup />
             </MainLayout>
           }
         ></Route>
