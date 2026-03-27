@@ -21,13 +21,13 @@ export default function Heart(props) {
           geometry={nodes.Object_8.geometry}
           material={materials.Heart}
           rotation={[-Math.PI / 2, Math.PI / 2, 0]}
-          scale={100}
+          
         />
         <mesh
           geometry={nodes.Object_11.geometry}
           material={materials.Marble}
           rotation={[-Math.PI / 2, 0, 0]}
-          scale={100}
+         
         />
       </group>
     </group>

@@ -96,7 +96,7 @@ export default function HeroSection() {
           />
           
           <div className="w-full h-[350px] md:h-[300px] lg:h-[550px]">
-          <Canvas camera={{ position: [0, 0, 0], fov: 50 }}>
+          {/* <Canvas camera={{ position: [0, 0, 0], fov: 50 }}>
 
 <ambientLight intensity={1.5} />
 <directionalLight position={[2, 2, 2]} />
@@ -107,6 +107,17 @@ export default function HeroSection() {
 
 <OrbitControls makeDefault enableZoom={false} />
 <Environment preset='sunset'/>
+</Canvas> */}
+<Canvas camera={{ position: [0, 0, 5] }}>
+
+<ambientLight intensity={2} />
+<directionalLight position={[3, 3, 3]} intensity={1.5} />
+
+<Suspense fallback={null}>
+<Environment preset="sunset" blur={0.8} />
+  <Heart scale={2.3} />
+</Suspense>
+
 </Canvas>
 </div>
         </div>
