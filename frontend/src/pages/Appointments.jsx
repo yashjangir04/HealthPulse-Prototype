@@ -5,8 +5,8 @@ import {
   scheduleAppointment,
   cancelAppointment,
   rescheduleAppointment,
+  updateAppointmentStatus
 } from "../api/appointment";
-import { extractTime } from "../utils/DateTimeManager";
 import { useNavigate } from "react-router-dom";
 
 const Appointments = () => {
@@ -20,9 +20,10 @@ const Appointments = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
-
-  // Start with an empty array. No more fake data!
   const [appointments, setAppointments] = useState([]);
+  
+  const [now, setNow] = useState(Date.now());
+
   const fetchAppointments = async () => {
     try {
       const result = await getAppointments();
@@ -33,13 +34,13 @@ const Appointments = () => {
   };
 
   useEffect(() => {
-    // Fetch immediately when the page loads
     fetchAppointments();
-
-    // convert the upcoming to connect if 
+    
     const intervalId = setInterval(() => {
+      setNow(Date.now());
       fetchAppointments();
-    }, 60000);
+    }, 10000); // Checks every 10 seconds
+
     return () => clearInterval(intervalId);
   }, []);
 
@@ -58,17 +59,31 @@ const Appointments = () => {
     cancelled: 4,
   };
 
-  const filteredAppointments = appointments
-    .filter((app) => activeTab === "all" || app.status === activeTab)
-    .sort((a, b) => {
-      if (statusPriority[a.status] !== statusPriority[b.status]) {
-        return statusPriority[a.status] - statusPriority[b.status];
-      }
+  const fiveMinutesMs = 5 * 60 * 1000;
 
+  const derivedAppointments = appointments.map((app) => {
+    let displayStatus = app.status ? app.status.toLowerCase() : "";
+
+    if (displayStatus === "upcoming") {
+      const startTimeMs = new Date(app.startTime).getTime();
+      // If current time is past the (start time - 5 mins), force it to ongoing
+      if (now >= (startTimeMs - fiveMinutesMs)) {
+        displayStatus = "ongoing";
+      }
+    }
+    return { ...app, displayStatus };
+  });
+
+  const filteredAppointments = derivedAppointments
+    .filter((app) => activeTab === "all" || app.displayStatus === activeTab)
+    .sort((a, b) => {
+      if (statusPriority[a.displayStatus] !== statusPriority[b.displayStatus]) {
+        return statusPriority[a.displayStatus] - statusPriority[b.displayStatus];
+      }
       const timeA = new Date(a.startTime).getTime();
       const timeB = new Date(b.startTime).getTime();
 
-      if (a.status === "completed" || a.status === "cancelled") {
+      if (a.displayStatus === "completed" || a.displayStatus === "cancelled") {
         return timeB - timeA;
       }
       return timeA - timeB;
@@ -76,22 +91,45 @@ const Appointments = () => {
 
   const getStatusStyles = (status) => {
     switch (status) {
-      case "upcoming":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      case "ongoing":
-        return "bg-green-100 text-green-700 border-green-200";
-      case "completed":
-        return "bg-gray-100 text-gray-700 border-gray-200";
-      case "cancelled":
-        return "bg-red-100 text-red-700 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+      case "upcoming": return "bg-blue-100 text-blue-700 border-blue-200";
+      case "ongoing": return "bg-green-100 text-green-700 border-green-200";
+      case "completed": return "bg-gray-100 text-gray-700 border-gray-200";
+      case "cancelled": return "bg-red-100 text-red-700 border-red-200";
+      default: return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
-  // --- Handlers ---
-  const handleJoinRoom = (roomID) => {
-    navigate(`/meeting/${roomID}`);
+  const getDateBoxStyles = (status) => {
+    switch (status) {
+      case "ongoing": return "bg-green-50 border-green-100 text-green-600";
+      case "completed": return "bg-gray-50 border-gray-200 text-gray-600";
+      case "cancelled": return "bg-red-50 border-red-100 text-red-600";
+      case "upcoming":
+      default: return "bg-blue-50 border-blue-100 text-blue-600";
+    }
+  };
+
+  const formatTimeIST = (dateString) => {
+    return new Date(dateString).toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const handleJoinRoom = async (appointment) => {
+    try {
+      if (user.role === "doctor" && appointment.status?.toLowerCase() === "upcoming") {
+        await updateAppointmentStatus({
+          meetingID: appointment._id,
+          status: "ongoing",
+          startTime: new Date()
+        });
+      }
+      navigate(`/meeting/${appointment.roomID}`);
+    } catch (error) {
+      console.error("Failed to start meeting:", error);
+    }
   };
 
   const handleOpenReschedule = (appointment) => {
@@ -115,55 +153,45 @@ const Appointments = () => {
     setModalMode("cancel");
     setIsModalOpen(true);
   };
+  
+  const handleOpenDetails = (appointment) => {
+    setSelectedAppointment(appointment);
+    setModalMode("details");
+    setIsModalOpen(true);
+  };
 
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     let combinedDateTimeISO = null;
 
-    if (modalMode !== "cancel" && newDate && newTime) {
-      // Result in the format -> "2026-03-30T14:30:00"
+    if (modalMode !== "cancel" && modalMode !== "details" && newDate && newTime) {
       const combinedString = `${newDate}T${newTime}:00`;
-
-      // Convert to a Date object, then to a safe ISO string for MongoDB
       const dateTimeObject = new Date(combinedString);
       combinedDateTimeISO = dateTimeObject.toISOString();
     }
 
-    if (modalMode === "reschedule") {
-      console.log(
-        "Rescheduling appointment:",
-        selectedAppointment._id,
-        "for",
-        combinedDateTimeISO,
-      );
-
-      await rescheduleAppointment({
-        meetingID: selectedAppointment._id,
-        startTime: combinedDateTimeISO,
-      });
-    } else if (modalMode === "followup") {
-      console.log(
-        "Creating new followup for patient:",
-        selectedAppointment.patientID._id,
-        "at",
-        combinedDateTimeISO,
-      );
-
-      await scheduleAppointment({
-        startTime: combinedDateTimeISO,
-        patientID: selectedAppointment.patientID._id,
-        doctorID: selectedAppointment.doctorID._id,
-      });
-    } else if (modalMode === "cancel") {
-      console.log("Cancelling appointment:", selectedAppointment._id);
-
-      await cancelAppointment({
-        meetingID: selectedAppointment._id,
-      });
+    try {
+      if (modalMode === "reschedule") {
+        await rescheduleAppointment({
+          meetingID: selectedAppointment._id,
+          startTime: combinedDateTimeISO,
+        });
+      } else if (modalMode === "followup") {
+        await scheduleAppointment({
+          startTime: combinedDateTimeISO,
+          patientID: selectedAppointment.patientID._id,
+          doctorID: selectedAppointment.doctorID._id,
+        });
+      } else if (modalMode === "cancel") {
+        await cancelAppointment({
+          meetingID: selectedAppointment._id,
+        });
+      }
+      setIsModalOpen(false);
+      await fetchAppointments();
+    } catch (error) {
+      console.error("Action failed:", error);
     }
-
-    setIsModalOpen(false);
-    fetchAppointments();
   };
 
   return (
@@ -205,25 +233,26 @@ const Appointments = () => {
         ) : (
           filteredAppointments.map((appointment) => (
             <div
-              key={appointment._id} // Using true MongoDB _id
+              key={appointment._id}
               className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-6"
             >
               <div className="flex flex-col md:flex-row gap-6 md:items-center">
-                <div className="bg-blue-50 rounded-xl p-4 text-center min-w-[100px] border border-blue-100">
-                  <p className="poppins-semibold text-blue-600 text-lg">
-                    {new Date(appointment.startTime).toLocaleDateString(
-                      "en-GB",
-                      { day: "numeric", month: "short" },
+                <div className={`rounded-xl p-4 text-center min-w-32.5 border flex flex-col justify-center transition-colors ${getDateBoxStyles(appointment.displayStatus)}`}>
+                  <p className="poppins-semibold text-lg">
+                    {new Date(appointment.startTime).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                  </p>
+                  
+                  <div className="inter-medium text-xs mt-1 opacity-80">
+                    <span>{formatTimeIST(appointment.startTime)}</span>
+                    
+                    {appointment.displayStatus === "completed" && appointment.updatedAt && (
+                      <span className="whitespace-nowrap"> - {formatTimeIST(appointment.updatedAt)}</span>
                     )}
-                  </p>
-                  <p className="inter-medium text-gray-500 text-xs mt-1">
-                    {extractTime(appointment.startTime)}
-                  </p>
+                  </div>
                 </div>
 
                 <div>
                   <h3 className="poppins-semibold text-gray-900 text-lg">
-                    {/* Maps to the populated database names perfectly! */}
                     {isDoctor
                       ? appointment?.patientID?.name || "Patient"
                       : appointment?.doctorID?.name || "Doctor"}
@@ -238,97 +267,74 @@ const Appointments = () => {
 
               <div className="flex flex-col md:items-end gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-gray-100 w-full md:w-auto">
                 <span
-                  className={`inter-medium text-xs px-3 py-1.5 rounded-full uppercase tracking-wider border w-max ${getStatusStyles(appointment.status)}`}
+                  className={`inter-medium text-xs px-3 py-1.5 rounded-full uppercase tracking-wider border w-max ${getStatusStyles(
+                    appointment.displayStatus
+                  )}`}
                 >
-                  {appointment.status}
+                  {appointment.displayStatus}
                 </span>
 
                 <div className="flex flex-wrap items-center gap-2 w-full md:w-auto md:justify-end">
-                  {appointment.status === "ongoing" && (
+                  {appointment.displayStatus === "ongoing" && (
                     <button
-                      onClick={() => handleJoinRoom(appointment.roomID)}
+                      onClick={() => handleJoinRoom(appointment)}
                       className="px-5 py-2.5 text-sm poppins-semibold rounded-full bg-green-500 cursor-pointer text-white hover:bg-green-600 shadow-md hover:shadow-lg transition-all flex items-center gap-2 animate-pulse"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        />
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                       </svg>
                       Join Meeting
                     </button>
                   )}
 
                   {isDoctor &&
-                    (appointment.status === "upcoming" ||
-                      appointment.status === "ongoing") && (
+                    (appointment.displayStatus === "upcoming" ||
+                      appointment.displayStatus === "ongoing") && (
                       <button
                         onClick={() => handleOpenReschedule(appointment)}
                         className="px-4 py-2 text-sm inter-medium rounded-full border border-blue-200 text-blue-600 cursor-pointer hover:bg-blue-50 transition-colors flex items-center gap-1.5"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         Reschedule
                       </button>
                     )}
 
-                  {isDoctor && appointment.status === "completed" && (
-                    <button
-                      onClick={() => handleOpenFollowUp(appointment)}
-                      className="px-4 py-2 text-sm inter-medium rounded-full border border-blue-200 text-blue-600 cursor-pointer hover:bg-blue-50 transition-colors flex items-center gap-1.5"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                  {/* --- NEW/UPDATED COMPLETED BUTTONS --- */}
+                  {appointment.displayStatus === "completed" && (
+                    <>
+                      <button
+                        onClick={() => handleOpenDetails(appointment)}
+                        className="px-4 py-2 text-sm inter-medium rounded-full border border-gray-200 text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-1.5"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      Schedule Follow-up
-                    </button>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        View Details
+                      </button>
+
+                      {isDoctor && (
+                        <button
+                          onClick={() => handleOpenFollowUp(appointment)}
+                          className="px-4 py-2 text-sm inter-medium rounded-full border border-blue-200 text-blue-600 cursor-pointer hover:bg-blue-50 transition-colors flex items-center gap-1.5"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Schedule Follow-up
+                        </button>
+                      )}
+                    </>
                   )}
 
-                  {appointment.status === "upcoming" && (
+                  {appointment.displayStatus === "upcoming" && (
                     <button
                       onClick={() => handleOpenCancel(appointment)}
                       className="px-4 py-2 text-sm inter-medium rounded-full border border-red-200 text-red-500 cursor-pointer hover:bg-red-50 transition-colors flex items-center gap-1.5"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                       Cancel
                     </button>
@@ -348,81 +354,137 @@ const Appointments = () => {
                 {modalMode === "reschedule" && "Reschedule Appointment"}
                 {modalMode === "followup" && "Schedule Follow-up"}
                 {modalMode === "cancel" && "Cancel Appointment"}
+                {modalMode === "details" && "Appointment Details"}
               </h2>
-              <p className="inter-regular text-sm text-gray-500 mt-1">
-                {modalMode === "reschedule" && "Updating time for "}
-                {modalMode === "followup" && "Booking new visit for "}
-                {modalMode === "cancel" &&
-                  "Are you sure you want to cancel the visit with "}
-                <span className="font-semibold text-gray-700">
-                  {isDoctor
-                    ? selectedAppointment?.patientID?.name
-                    : selectedAppointment?.doctorID?.name}
-                </span>
-                ?
-              </p>
+              {modalMode !== "details" && (
+                <p className="inter-regular text-sm text-gray-500 mt-1">
+                  {modalMode === "reschedule" && "Updating time for "}
+                  {modalMode === "followup" && "Booking new visit for "}
+                  {modalMode === "cancel" && "Are you sure you want to cancel the visit with "}
+                  <span className="font-semibold text-gray-700">
+                    {isDoctor
+                      ? selectedAppointment?.patientID?.name
+                      : selectedAppointment?.doctorID?.name}
+                  </span>
+                  ?
+                </p>
+              )}
             </div>
 
-            <form onSubmit={handleModalSubmit} className="p-6 space-y-5">
-              {modalMode !== "cancel" && (
-                <>
-                  <div>
-                    <label className="inter-medium block text-sm text-gray-700 mb-2">
-                      Select Date
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={newDate}
-                      onChange={(e) => setNewDate(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
-                    />
+            {/* --- NEW DETAILS VIEW CONDITIONAL RENDER --- */}
+            {modalMode === "details" ? (
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto scrollbar-hide">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span className="text-xs text-gray-500 inter-medium block mb-1">Date</span>
+                    <span className="text-sm poppins-semibold text-gray-800">
+                      {new Date(selectedAppointment.startTime).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                    </span>
                   </div>
-
-                  <div>
-                    <label className="inter-medium block text-sm text-gray-700 mb-2">
-                      Select Time
-                    </label>
-                    <input
-                      type="time"
-                      required
-                      value={newTime}
-                      onChange={(e) => setNewTime(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
-                    />
+                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span className="text-xs text-gray-500 inter-medium block mb-1">Time</span>
+                    <span className="text-sm poppins-semibold text-gray-800">
+                      {formatTimeIST(selectedAppointment.startTime)} 
+                      {selectedAppointment.endTime && ` - ${formatTimeIST(selectedAppointment.endTime)}`}
+                    </span>
                   </div>
-                </>
-              )}
-
-              {modalMode === "cancel" && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-xl inter-medium text-sm border border-red-100">
-                  This action cannot be undone. You will need to book a new
-                  appointment if you change your mind.
                 </div>
-              )}
 
-              <div className="flex gap-3 pt-4">
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                  <span className="text-xs text-blue-500 inter-medium block mb-1">
+                    {isDoctor ? "Patient Name" : "Doctor Name"}
+                  </span>
+                  <span className="text-base poppins-semibold text-blue-900">
+                    {isDoctor ? selectedAppointment?.patientID?.name : selectedAppointment?.doctorID?.name}
+                  </span>
+                </div>
+
+                {selectedAppointment?.notes && (
+                  <div>
+                    <h4 className="inter-medium text-sm text-gray-700 mb-2">Doctor's Notes</h4>
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 text-sm text-gray-600 inter-regular whitespace-pre-wrap">
+                      {selectedAppointment.notes}
+                    </div>
+                  </div>
+                )}
+
+                {selectedAppointment?.prescribedMedicine?.length > 0 && (
+                  <div>
+                    <h4 className="inter-medium text-sm text-gray-700 mb-2">Prescribed Medicines</h4>
+                    <ul className="list-disc list-inside space-y-1 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                      {selectedAppointment.prescribedMedicine.map((med, idx) => (
+                        <li key={idx} className="text-sm text-gray-600 inter-regular capitalize">{med}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="w-full py-3 px-4 rounded-full poppins-semibold text-gray-600 bg-white border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
+                  className="w-full mt-2 py-3 px-4 rounded-full poppins-semibold text-gray-600 bg-white border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
                 >
-                  {modalMode === "cancel" ? "Keep Appointment" : "Cancel"}
-                </button>
-                <button
-                  type="submit"
-                  className={`w-full py-3 px-4 rounded-full cursor-pointer poppins-semibold text-white shadow-md transition-all ${
-                    modalMode === "cancel"
-                      ? "bg-red-500 hover:bg-red-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                >
-                  {modalMode === "reschedule" && "Confirm Changes"}
-                  {modalMode === "followup" && "Book Follow-up"}
-                  {modalMode === "cancel" && "Yes, Cancel It"}
+                  Close
                 </button>
               </div>
-            </form>
+            ) : (
+              /* EXISTING MODAL FORM */
+              <form onSubmit={handleModalSubmit} className="p-6 space-y-5">
+                {modalMode !== "cancel" && (
+                  <>
+                    <div>
+                      <label className="inter-medium block text-sm text-gray-700 mb-2">Select Date</label>
+                      <input
+                        type="date"
+                        required
+                        value={newDate}
+                        onChange={(e) => setNewDate(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="inter-medium block text-sm text-gray-700 mb-2">Select Time</label>
+                      <input
+                        type="time"
+                        required
+                        value={newTime}
+                        onChange={(e) => setNewTime(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors inter-regular"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {modalMode === "cancel" && (
+                  <div className="bg-red-50 text-red-600 p-4 rounded-xl inter-medium text-sm border border-red-100">
+                    This action cannot be undone. You will need to book a new appointment if you change your mind.
+                  </div>
+                )}
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="w-full py-3 px-4 rounded-full poppins-semibold text-gray-600 bg-white border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
+                  >
+                    {modalMode === "cancel" ? "Keep Appointment" : "Cancel"}
+                  </button>
+                  <button
+                    type="submit"
+                    className={`w-full py-3 px-4 rounded-full cursor-pointer poppins-semibold text-white shadow-md transition-all ${
+                      modalMode === "cancel"
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    }`}
+                  >
+                    {modalMode === "reschedule" && "Confirm Changes"}
+                    {modalMode === "followup" && "Book Follow-up"}
+                    {modalMode === "cancel" && "Yes, Cancel It"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
