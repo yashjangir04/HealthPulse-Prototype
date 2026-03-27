@@ -8,5 +8,6 @@ router.post("/end-appointment" , authMiddleware , appointmentController.endAppoi
 router.post("/cancel-appointment" , authMiddleware , appointmentController.cancelAppointment) ;
 router.post("/schedule-appointment" , authMiddleware , appointmentController.scheduleAppointment) ;
 router.post("/reschedule-appointment" , authMiddleware , appointmentController.rescheduleAppointment) ;
+router.post("/update-appointment-status" , authMiddleware , appointmentController.updateAppointmentStatus) ;
 
 module.exports = router ;

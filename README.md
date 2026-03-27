@@ -5,6 +5,7 @@
 ```env
 VITE_ZC_SERVER_SECRET=
 VITE_ZC_APP_ID=
+VITE_BACKEND_ROUTE=
 ```
 
 ### 🔹 backend.env
