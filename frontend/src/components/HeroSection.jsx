@@ -6,7 +6,7 @@ import vector2 from "../assets/blob2.png";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
-
+import { ContactShadows } from "@react-three/drei";
 import Heart from "../components/Heart"; 
 import { AmbientLight } from "three";
 const words = ["trusted", "accessible", "empower", "digital"];
@@ -86,8 +86,7 @@ export default function HeroSection() {
 
         {/* RIGHT SECTION (3D Embed) */}
         <div className="relative w-full lg:w-1/2 flex flex-col items-center">
-          <div className="hb1 h-10 w-40 bg-[#dfedff] absolute top-2 left-0 z-100">
-          </div>
+          
          
           <img
             src={vector1}
@@ -115,7 +114,9 @@ export default function HeroSection() {
 
 <Suspense fallback={null}>
 <Environment preset="sunset" blur={0.8} />
-  <Heart scale={2.3} />
+
+  <Heart scale={3} />
+
 </Suspense>
 
 </Canvas>
