@@ -82,7 +82,7 @@ function App() {
           path="/profile"
           element={
             <MainLayout showNavbar={false} showSidebar={true} isFullHeighted={true}>
-              <Contact />
+              <Profile />
             </MainLayout>
           }
         ></Route>
