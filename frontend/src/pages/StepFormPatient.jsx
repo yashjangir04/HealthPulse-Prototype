@@ -8,7 +8,10 @@ import PatientPersonal from "../components/steps/PatientPersonal";
 import EmergencyContact from "../components/steps/EmergencyContact";
 import { signupPatient } from "../api/auth";
 import AuthLayout from "../layouts/AuthLayout";
+import { useNavigate } from 'react-router-dom';
+
 const StepFormPatient = () => {
+  const navigate = useNavigate() ;
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -83,7 +86,7 @@ const StepFormPatient = () => {
       
           console.log("Patient registered:", response.data);
       
-          alert("Registration successful");
+          navigate("/account/login") ;
       
         } catch (error) {
       

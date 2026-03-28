@@ -7,7 +7,10 @@ import ShopDetails from "../components/steps/ShopDetails";
 import ShopFinal from "../components/steps/ShopFinal";
 import {signupShopkeeper} from "../api/auth";
 import AuthLayout from "../layouts/AuthLayout";
+import { useNavigate } from 'react-router-dom';
+
 const StepFormShopkeeper = () => {
+  const navigate = useNavigate() ;
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -70,7 +73,7 @@ const StepFormShopkeeper = () => {
   
       console.log("Shopkeeper registered:", response.data);
   
-      alert("Registration successful");
+      navigate("/account/login") ;
   
     } catch (error) {
   

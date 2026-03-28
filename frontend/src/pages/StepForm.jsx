@@ -9,7 +9,10 @@ import Professional from '../components/steps/Professional';
 import Account from '../components/steps/Account';
 import { signupDoctor } from '../api/auth';
 import AuthLayout from '../layouts/AuthLayout';
+import { useNavigate } from 'react-router-dom';
+
 const StepForm = () => {
+  const navigate = useNavigate() ;
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -85,7 +88,7 @@ const StepForm = () => {
   
       console.log("DOCTOR registered:", response.data);
   
-      alert("Registration successful");
+      navigate("/account/login") ;
   
     } catch (error) {
   
