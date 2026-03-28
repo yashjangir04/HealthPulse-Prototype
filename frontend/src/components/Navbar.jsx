@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../auth/AuthContext";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bell, User, LogOut, LogIn } from "lucide-react";
 import logo from "../assets/logo.svg";
 import plusIcon from "../assets/plus.svg";
-import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, isLoggedIn, logout } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        setOpenModal(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="fixed top-0 w-full h-20 md:h-24 flex items-center justify-between px-6 md:px-12 bg-white/60 backdrop-blur-xl z-100 border-b border-white/20 shadow-sm">
@@ -96,24 +107,47 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {isLoggedIn ? (
-          <>
-            {/* Logout Text (replaces Login) */}
-            <button
-              onClick={logout}
-              className="relative group text-red-400 cursor-pointer hover:text-red-500 transition-colors poppins-bold text-lg"
-            >
-              Logout
-              <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0.75 bg-red-500 rounded-full transition-all duration-300 group-hover:w-full"></span>
-            </button>
+{isLoggedIn ? (
+          <div className="relative flex items-center gap-6">
+            {/* NEW: Profile Dropdown Logic Applied to your Avatar */}
+            <div className="relative">
+              <div 
+                onClick={() => setOpenModal(!openModal)} 
+                className="w-11 h-11 rounded-full cursor-pointer bg-blue-600 flex items-center justify-center text-white font-semibold text-base lg:text-lg shadow-md hover:scale-105 transition-transform"
+              >
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
 
-            {/* Professional Letter Avatar (replaces Register button) */}
-            <div onClick={() => {
-              navigate('/profile')
-            }} className="w-11 h-11 rounded-full cursor-pointer bg-blue-600 flex items-center justify-center text-white font-semibold text-base lg:text-lg shadow-md">
-              {user?.name?.charAt(0).toUpperCase()}
+              {/* DROPDOWN BOX */}
+              {openModal && (
+                <div
+                  ref={modalRef}
+                  className="absolute right-0 top-full mt-4 w-48 bg-white border border-slate-100 shadow-2xl rounded-2xl overflow-hidden z-[110]"
+                >
+                  <button
+                    onClick={() => {
+                      navigate("/profile");
+                      setOpenModal(false);
+                    }}
+                    className="w-full text-left px-5 py-4 text-slate-600 font-bold hover:bg-blue-50 transition-colors border-b border-slate-50 flex items-center gap-2"
+                  >
+                    <User size={18} /> My Profile
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      logout();
+                      setOpenModal(false);
+                      navigate("/");
+                    }}
+                    className="w-full text-left px-5 py-4 text-red-500 font-bold hover:bg-red-50 transition-colors flex items-center gap-2"
+                  >
+                    <LogOut size={18} /> Logout
+                  </button>
+                </div>
+              )}
             </div>
-          </>
+          </div>
         ) : (
           <div
             className={`${isMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row items-center gap-6 lg:gap-10 text-[18px] font-bold text-slate-500`}
