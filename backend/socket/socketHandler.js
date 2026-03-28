@@ -33,6 +33,18 @@ const socketHandler = (io) => {
             socket.disconnect() ;
         })
 
+        socket.on("join-room" , (roomID) => {
+            socket.join(roomID) ;
+            console.log(`${socket.id} joined room ${roomID}`);
+        })
+
+        socket.on("update-notes" , (data) => {
+            socket.to(data.roomID).emit("update-notes" , data.notes) ;
+        })
+
+        socket.on("update-prescription" , (data) => {
+            socket.to(data.roomID).emit("update-prescription" , data.prescriptions) ;
+        })
     });
 };
 

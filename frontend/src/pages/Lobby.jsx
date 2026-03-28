@@ -43,7 +43,6 @@ const Lobby = () => {
     });
 
     return () => {
-      socket.emit("cancel");
       socket.disconnect();
     };
   }, []);

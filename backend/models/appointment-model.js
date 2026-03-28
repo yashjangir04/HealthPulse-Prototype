@@ -15,7 +15,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["upcoming", "ongoing" , "completed" , "cancelled"],
+        enum: ["upcoming", "ongoing", "completed", "cancelled"],
         default: "ongoing"
     },
     doctorID: {
@@ -27,18 +27,18 @@ const appointmentSchema = new mongoose.Schema({
         ref: "Patient"
     },
     notes: {
-        type: String,
+        type: String
     },
-    prescribedMedicine: [{
-        type: String,
-    }],
+    prescribedMedicines: {
+        type: String
+    },
     isActive: {
         type: Boolean,
         default: true
     },
     type: {
         type: String,
-        enum: ["general" , "scheduled"],
+        enum: ["general", "scheduled"],
         default: "general"
     }
 }, { timestamps: true });

@@ -11,4 +11,5 @@ export const cancelAppointment = (data) => API.post("/cancel-appointment" , data
 export const scheduleAppointment = (data) => API.post("/schedule-appointment" , data) ;
 export const rescheduleAppointment = (data) => API.post("/reschedule-appointment" , data) ;
 export const updateAppointmentStatus = (data) => API.post("/update-appointment-status" , data) ;
+export const getAppointmentDetails = (data) => API.post("/get-appointment-details" , data) ;
 

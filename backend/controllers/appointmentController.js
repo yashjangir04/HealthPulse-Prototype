@@ -13,10 +13,20 @@ const getAppointments = async (req, res) => {
     return res.status(200).send(appointments);
 }
 
+const getAppointmentDetails = async (req, res) => {
+    const { meetingID } = req.body;
+    try {
+        const appointment = await Appointment.findOne({ roomID: meetingID }).populate("patientID doctorID").lean();
+        return res.status(200).json(appointment);
+    } catch (err) {
+        return res.status(500).json({ msg: "Failed to get appointment details" });
+    }
+}
+
 const endAppointment = async (req, res) => {
     const { meetingID } = req.body;
     try {
-        await Appointment.updateOne({ roomID: meetingID }, { $set: { status: "completed", endTime: new Date() } })
+        await Appointment.updateOne({ roomID: meetingID }, { $set: { status: "completed", endTime: new Date(), notes: req.body.notes, prescribedMedicines: req.body.prescriptions } });
         return res.status(200).json({ msg: "Meeting status updated successfully" });
     } catch (err) {
         return res.status(500).json({ msg: "Failed to update meeting status" });
@@ -25,7 +35,7 @@ const endAppointment = async (req, res) => {
 
 const cancelAppointment = async (req, res) => {
     const { meetingID } = req.body;
-    
+
     try {
         await Appointment.updateOne({ _id: meetingID }, { $set: { status: "cancelled" } })
         return res.status(200).json({ msg: "Meeting status updated successfully" });
@@ -43,7 +53,8 @@ const scheduleAppointment = async (req, res) => {
             startTime: startTime,
             patientID,
             doctorID,
-            status: "upcoming"
+            status: "upcoming",
+            type: "scheduled"
         });
         return res.status(200).json({ msg: "Appointment scheduled successfully" });
     }
@@ -62,7 +73,8 @@ const rescheduleAppointment = async (req, res) => {
             },
             {
                 $set: {
-                    startTime: startTime
+                    startTime: startTime,
+                    type: "scheduled"
                 }
             }
         );
@@ -73,8 +85,8 @@ const rescheduleAppointment = async (req, res) => {
     }
 }
 
-const updateAppointmentStatus = async (req , res) => {
-    const { status , meetingID , startTime } = req.body;
+const updateAppointmentStatus = async (req, res) => {
+    const { status, meetingID, startTime } = req.body;
 
     try {
         await Appointment.updateOne(
@@ -101,5 +113,6 @@ module.exports = {
     cancelAppointment,
     scheduleAppointment,
     rescheduleAppointment,
-    updateAppointmentStatus
+    updateAppointmentStatus,
+    getAppointmentDetails
 }
