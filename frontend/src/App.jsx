@@ -11,7 +11,7 @@ import Profile from "./pages/profile";
 import Connect from "./pages/Connect";
 
 import SignInForm from "./pages/SignInForm";
-import SignUpForm from "./pages/SignUpForm";
+
 import StepForm from "./pages/StepForm";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";

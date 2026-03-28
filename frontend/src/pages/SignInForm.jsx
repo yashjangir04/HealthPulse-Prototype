@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { login, getMe } from "../api/auth";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-
+import AuthLayout from "../layouts/AuthLayout";
 const buttonClasses = `w-full text-white bg-[#1B80FD] focus:ring-4 focus:outline-none 
 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all 
 duration-200 transform hover:scale-[1.02] hover:shadow-md`;
@@ -55,16 +55,11 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-full bg-white rounded-lg shadow-xl shadow-primary/50 md:mt-0 sm:max-w-md xl:p-0 border border-gray-100">
-        <div className="p-6 space-y-6 md:space-y-7 sm:p-8">
-          <h1 className="text-xl font-bold leading-tight tracking-tight text-backgroundColor md:text-2xl text-center">
-            Welcome Back
-            <p className="text-sm font-normal text-gray-500 mt-1">
-              Sign in to your account
-            </p>
-          </h1>
-
+   
+    <AuthLayout
+    title="Welcome Back"
+    subtitle="Sign in to your account"
+  >
           {/* Show Error Message if it exists */}
           {errorMessage && (
             <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg text-center">
@@ -193,11 +188,10 @@ const SignInForm = () => {
           </div>
 
           <p className="text-sm text-center text-gray-600 mt-4 border-t border-gray-100 pt-4">
-            If you don&apos;t have an account, Do Sign Up
+            Don't have an account ?
+            <a href='/account/register' className="cursor-pointer underline">  Sign Up</a>
           </p>
-        </div>
-      </div>
-    </div>
+          </AuthLayout>
   );
 };
 

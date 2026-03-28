@@ -8,6 +8,7 @@ import Address from '../components/steps/Address';
 import Professional from '../components/steps/Professional';
 import Account from '../components/steps/Account';
 import { signupDoctor } from '../api/auth';
+import AuthLayout from '../layouts/AuthLayout';
 const StepForm = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -97,11 +98,10 @@ const StepForm = () => {
 
   return (
 
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-
-      <div className="w-full bg-white rounded-lg shadow-xl sm:max-w-lg border border-gray-100">
-
-        <div className="p-8 space-y-6">
+    <AuthLayout
+    title="Create Account"
+    subtitle="Complete your profile step by step"
+  >
 
           {/* Stepper */}
           <Stepper
@@ -122,11 +122,7 @@ const StepForm = () => {
             steps={steps}
           />
 
-        </div>
-
-      </div>
-
-    </div>
+</AuthLayout>
 
   );
 };
