@@ -97,7 +97,7 @@ const StepFormShopkeeper = () => {
       />
   
       {/* Form Content */}
-      <div className="py-8 min-h-[280px]">
+      <div className="py-8 min-h-70">
         {displayStep(currentStep)}
       </div>
   

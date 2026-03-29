@@ -93,7 +93,7 @@ const Sidebar = ({
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[45] lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-45 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -122,7 +122,7 @@ const Sidebar = ({
         {/* Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex absolute -right-3 top-4 bg-white border border-gray-100 rounded-full p-1 shadow-lg hover:bg-blue-50 transition-colors z-[60]"
+          className="hidden lg:flex absolute -right-3 top-4 bg-white border border-gray-100 rounded-full p-1 shadow-lg hover:bg-blue-50 transition-colors z-60"
         >
           {isCollapsed ? (
             <ChevronRight size={16} className="text-blue-600" />
@@ -164,7 +164,7 @@ const Sidebar = ({
             <div className="flex flex-col gap-4">
               {/* Profile Info */}
               <div className="flex items-center gap-3 px-1">
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
+                <div className="shrink-0 w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
                   {getInitials(user?.name)}
                 </div>
                 {(!isCollapsed || isOpen) && (

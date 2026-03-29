@@ -8,7 +8,7 @@ const Landing = () => {
     <div className="min-h-screen flex flex-col">
       
       {/* Page Content */}
-      <main className="flex-grow">
+      <main className="grow">
         <HeroSection />
         <FeaturesSection />
       </main>
